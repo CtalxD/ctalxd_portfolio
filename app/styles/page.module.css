@@ -1,0 +1,140 @@
+/* styles/page.module.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Ceviche+One&display=swap');
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #fafaf8;
+  gap: 48px;
+  cursor: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.circleWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  position: relative;
+  z-index: 2;
+}
+
+.circleContainer {
+  position: relative;
+  width: 140px;
+  height: 140px;
+}
+
+.svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.counterText {
+  position: absolute;
+  z-index: 2;
+  color: #2a2a2a;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Georgia", "Times New Roman", serif;
+  line-height: 1;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: left, top;
+}
+
+.centerText {
+  position: absolute;
+  top: 50%;
+  left: 53%;
+  transform: translate(-50%, -50%);
+  color: #1a1a1a;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: "Ceviche One", cursive;
+  letter-spacing: 10px;
+  text-transform: uppercase;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.startButton {
+  padding: 10px 28px;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #fafaf8;
+  background: #1a1a1a;
+  border: none;
+  cursor: none;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+  outline: none;
+  z-index: 2;
+}
+
+.startButton::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #1a1a1a;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform: translateX(-50%);
+}
+
+.startButton:hover {
+  background: transparent;
+  color: #1a1a1a;
+  letter-spacing: 8px;
+}
+
+.startButton:hover::after {
+  width: 100%;
+}
+
+.startButton:active {
+  letter-spacing: 6px;
+  transition: all 0.1s ease;
+}
+
+.startButton:focus-visible {
+  outline: 2px solid #1a1a1a;
+  outline-offset: 4px;
+}
+
+.cursorCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.backgroundParticles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}

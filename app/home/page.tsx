@@ -9,6 +9,7 @@ export default function HomePage() {
   const [orbitOpacity, setOrbitOpacity] = useState(0);
   const [moveToCorner, setMoveToCorner] = useState(false);
   const [showHero, setShowHero] = useState(false);
+  const [showCurtain, setShowCurtain] = useState(false);
 
   useEffect(() => {
     const timer1 = setTimeout(() => {
@@ -26,12 +27,17 @@ export default function HomePage() {
     const timer4 = setTimeout(() => {
       setShowHero(true);
     }, 6500);
+
+    const timer5 = setTimeout(() => {
+      setShowCurtain(true);
+    }, 8500);
     
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
       clearTimeout(timer4);
+      clearTimeout(timer5);
     };
   }, []);
 
@@ -81,8 +87,24 @@ export default function HomePage() {
     });
   }, [characters]);
 
+  const heroNameClasses = [
+    styles.heroName,
+    showCurtain ? styles.heroNameWhite : ''
+  ].filter(Boolean).join(' ');
+
+  const heroDividerClasses = [
+    styles.heroDivider,
+    showCurtain ? styles.heroDividerWhite : ''
+  ].filter(Boolean).join(' ');
+
+  const heroTitleClasses = [
+    styles.heroTitle,
+    showCurtain ? styles.heroTitleDark : ''
+  ].filter(Boolean).join(' ');
+
   return (
     <main className={styles.container}>
+      <div className={`${styles.curtain} ${showCurtain ? styles.curtainVisible : ''}`}></div>
       <div className={`${styles.animationContainer} ${moveToCorner ? styles.moveToTopLeft : ''}`}>
         <div className={styles.centerContent}>
           <div className={`${styles.orbitWrapper} ${moveToCorner ? styles.orbitSmall : ''}`}>
@@ -97,7 +119,7 @@ export default function HomePage() {
                 {characters.map((char, index) => (
                   <span
                     key={index}
-                    className={`${styles.orbitChar} ${moveToCorner ? styles.orbitCharSmall : ''}`}
+                    className={`${styles.orbitChar} ${moveToCorner ? styles.orbitCharSmall : ''} ${showCurtain ? styles.orbitCharWhite : ''}`}
                     style={{
                       left: `${moveToCorner ? characterPositions[index].x * 0.6 : characterPositions[index].x}px`,
                       top: `${moveToCorner ? characterPositions[index].y * 0.6 : characterPositions[index].y}px`,
@@ -109,7 +131,7 @@ export default function HomePage() {
                 ))}
               </div>
             )}
-            <h1 className={`${styles.name} ${animationPhase >= 1 ? styles.visible : ''} ${moveToCorner ? styles.nameSmall : ''}`}>
+            <h1 className={`${styles.name} ${animationPhase >= 1 ? styles.visible : ''} ${moveToCorner ? styles.nameSmall : ''} ${showCurtain ? styles.nameWhite : ''}`}>
               Sital
             </h1>
           </div>
@@ -118,7 +140,7 @@ export default function HomePage() {
 
       <div className={`${styles.heroSection} ${showHero ? styles.heroVisible : ''}`}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroName}>
+          <h1 className={heroNameClasses}>
             <span className={styles.heroNameChar} style={{ '--char-index': 0 } as React.CSSProperties}>S</span>
             <span className={styles.heroNameChar} style={{ '--char-index': 1 } as React.CSSProperties}>I</span>
             <span className={styles.heroNameChar} style={{ '--char-index': 2 } as React.CSSProperties}>T</span>
@@ -131,8 +153,8 @@ export default function HomePage() {
             <span className={styles.heroNameChar} style={{ '--char-index': 9 } as React.CSSProperties}>A</span>
             <span className={styles.heroNameChar} style={{ '--char-index': 10 } as React.CSSProperties}>L</span>
           </h1>
-          <div className={styles.heroDivider}></div>
-          <p className={styles.heroTitle}>
+          <div className={heroDividerClasses}></div>
+          <p className={heroTitleClasses}>
             <span className={styles.heroTitleWord}>UI/UX</span>
             <span className={styles.heroTitleWord}>&nbsp;ENGINEER</span>
           </p>

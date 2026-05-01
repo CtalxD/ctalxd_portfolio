@@ -1,11 +1,81 @@
 @import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@200;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
 
+.scrollContainer {
+  height: 200vh;
+  overflow: hidden;
+}
+
+.pagesWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200vh;
+  transition: transform 0.1s linear;
+  will-change: transform;
+}
+
 .container {
   position: relative;
-  min-height: 100vh;
+  height: 100vh;
   background-color: #fafaf8;
   overflow: hidden;
+}
+
+.nextPage {
+  position: relative;
+  height: 100vh;
+  background-color: #1a1a1a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.nextContent {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.nextTitle {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 96px;
+  font-weight: 600;
+  color: #ebebeb;
+  letter-spacing: 16px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.nextSubtitle {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 25px;
+  font-weight: 400;
+  color: #999999;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.curtain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #bcbcbc;
+  transform: translateY(-100%);
+  transition: transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.curtain.curtainVisible {
+  transform: translateY(0);
 }
 
 .animationContainer {
@@ -13,8 +83,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  transition: all 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: top 1.5s cubic-bezier(0.22, 0.61, 0.36, 1), left 1.5s cubic-bezier(0.22, 0.61, 0.36, 1), transform 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: top, left, transform;
+  z-index: 10;
 }
 
 .animationContainer.moveToTopLeft {
@@ -52,7 +123,7 @@
   letter-spacing: 2px;
   opacity: 0;
   transform: translate(-50%, -50%) translateY(100vh);
-  transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), font-size 1.5s cubic-bezier(0.22, 0.61, 0.36, 1), letter-spacing 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
   margin: 0;
   z-index: 2;
   white-space: nowrap;
@@ -68,7 +139,10 @@
 .name.nameSmall {
   font-size: 20px;
   letter-spacing: 1px;
-  transition: all 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.name.nameWhite {
+  color: #ebebeb;
 }
 
 .orbitChar {
@@ -84,12 +158,16 @@
   white-space: pre;
   pointer-events: none;
   will-change: transform;
-  transition: all 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: font-size 1.5s cubic-bezier(0.22, 0.61, 0.36, 1), letter-spacing 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .orbitChar.orbitCharSmall {
   font-size: 7px;
   letter-spacing: 0.3px;
+}
+
+.orbitChar.orbitCharWhite {
+  color: #ebebeb;
 }
 
 .heroSection {
@@ -101,6 +179,7 @@
   opacity: 0;
   transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
+  z-index: 10;
 }
 
 .heroSection.heroVisible {
@@ -132,10 +211,12 @@
   justify-content: center;
 }
 
+.heroName.heroNameWhite {
+  color: #ebebeb;
+}
+
 .heroNameChar {
   display: inline-block;
-  opacity: 0;
-  transform: translateY(40px) rotateX(-90deg);
   animation: charRise 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: calc(0.3s + (var(--char-index) * 0.06s));
 }
@@ -158,6 +239,10 @@
   opacity: 0;
   transform: scaleX(0);
   animation: dividerReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
+}
+
+.heroDivider.heroDividerWhite {
+  background-color: #ebebeb;
 }
 
 @keyframes dividerReveal {
@@ -183,10 +268,12 @@
   gap: 0.5rem;
 }
 
+.heroTitle.heroTitleDark {
+  color: #646464;
+}
+
 .heroTitleWord {
   display: inline-block;
-  opacity: 0;
-  transform: translateY(20px);
   animation: wordSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: 1.4s;
 }
@@ -224,5 +311,15 @@
   .animationContainer.moveToTopLeft {
     top: 40px;
     left: 40px;
+  }
+
+  .nextTitle {
+    font-size: 48px;
+    letter-spacing: 10px;
+  }
+  
+  .nextSubtitle {
+    font-size: 16px;
+    letter-spacing: 6px;
   }
 }

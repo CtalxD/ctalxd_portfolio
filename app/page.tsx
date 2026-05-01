@@ -42,6 +42,7 @@ export default function Home() {
   const cursorStateRef = useRef<'default' | 'nearCircle' | 'overButton'>('default');
   const magneticRef = useRef({ angle: 0, strength: 0 });
   const cursorAnimationRef = useRef<number | null>(null);
+  const mouseOnScreenRef = useRef(false);
   const router = useRouter();
   const duration = 3000;
 
@@ -59,15 +60,6 @@ export default function Home() {
     const bgCtx = bgCanvas.getContext('2d');
     if (!cursorCtx || !bgCtx) return;
 
-    // Set initial cursor position to center of screen
-    cursorRef.current = {
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2,
-      prevX: window.innerWidth / 2,
-      prevY: window.innerHeight / 2,
-      speed: 0
-    };
-
     const resize = () => {
       cursorCanvas.width = bgCanvas.width = window.innerWidth;
       cursorCanvas.height = bgCanvas.height = window.innerHeight;
@@ -78,6 +70,7 @@ export default function Home() {
     const circleCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 - 20 };
     
     const handleMouseMove = (e: MouseEvent) => {
+      mouseOnScreenRef.current = true;
       const prevX = cursorRef.current.x;
       const prevY = cursorRef.current.y;
       
@@ -135,9 +128,36 @@ export default function Home() {
       }
     };
 
+    const handleMouseLeave = () => {
+      mouseOnScreenRef.current = false;
+      cursorRef.current.speed = 0;
+      trailRef.current = [];
+      particlesRef.current = [];
+      magneticRef.current = { angle: 0, strength: 0 };
+    };
+
+    const handleMouseEnter = (e: MouseEvent) => {
+      mouseOnScreenRef.current = true;
+      // Initialize cursor position on enter
+      cursorRef.current = {
+        x: e.clientX,
+        y: e.clientY,
+        prevX: e.clientX,
+        prevY: e.clientY,
+        speed: 0
+      };
+    };
+
     const animate = () => {
+      // Always clear canvases
       cursorCtx.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height);
       bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+      // Only render cursor and effects if mouse is on screen
+      if (!mouseOnScreenRef.current) {
+        cursorAnimationRef.current = requestAnimationFrame(animate);
+        return;
+      }
 
       // Draw magnetic field glow
       if (magneticRef.current.strength > 0) {
@@ -215,9 +235,9 @@ export default function Home() {
         cursorCtx.rotate(magneticRef.current.angle + Math.PI / 4);
       }
 
-      // Outer geometric shape
+      // Outer geometric shape (diamond/cube)
       cursorCtx.beginPath();
-      const size = 6 + magneticInfluence * 4;
+      const size = 8 + magneticInfluence * 4;
       cursorCtx.moveTo(0, -size);
       cursorCtx.lineTo(size, 0);
       cursorCtx.lineTo(0, size);
@@ -225,6 +245,9 @@ export default function Home() {
       cursorCtx.closePath();
       cursorCtx.fillStyle = 'rgba(26, 26, 26, 0.9)';
       cursorCtx.fill();
+      cursorCtx.strokeStyle = 'rgba(250, 250, 248, 0.5)';
+      cursorCtx.lineWidth = 1;
+      cursorCtx.stroke();
 
       // Inner dot
       cursorCtx.beginPath();
@@ -237,7 +260,14 @@ export default function Home() {
       cursorCtx.beginPath();
       cursorCtx.arc(0, 0, size + 6, ringRotation, ringRotation + Math.PI * 1.5);
       cursorCtx.strokeStyle = 'rgba(26, 26, 26, 0.4)';
-      cursorCtx.lineWidth = 2;
+      cursorCtx.lineWidth = 1.5;
+      cursorCtx.stroke();
+
+      // Second rotating ring (opposite direction)
+      cursorCtx.beginPath();
+      cursorCtx.arc(0, 0, size + 10, -ringRotation, -ringRotation + Math.PI * 1.2);
+      cursorCtx.strokeStyle = 'rgba(26, 26, 26, 0.2)';
+      cursorCtx.lineWidth = 1;
       cursorCtx.stroke();
 
       cursorCtx.restore();
@@ -249,11 +279,15 @@ export default function Home() {
     };
 
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('mouseenter', handleMouseEnter);
     window.addEventListener('resize', resize);
     animate();
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseleave', handleMouseLeave);
+      window.removeEventListener('mouseenter', handleMouseEnter);
       window.removeEventListener('resize', resize);
       if (cursorAnimationRef.current) {
         cancelAnimationFrame(cursorAnimationRef.current);

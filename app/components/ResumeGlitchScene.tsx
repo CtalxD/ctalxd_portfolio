@@ -1,7 +1,7 @@
 // components/ResumeGlitchScene.tsx
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -377,27 +377,38 @@ const particleFragmentShader = `
   }
 `;
 
+// ─── SEEDED RANDOM HELPER ────────────────────────────────────────────────────
+function seededRandom(seed: number): () => number {
+  return () => {
+    seed = (seed * 16807) % 2147483647;
+    return (seed - 1) / 2147483646;
+  };
+}
+
 // ─── PARTICLES COMPONENT ─────────────────────────────────────────────────────
 function GlitchParticles({ width, height, scrollProgress }: { width: number; height: number; scrollProgress: number }) {
   const particlesRef = useRef<THREE.Points>(null);
   
-  const { positions, sizes, randomOffsets, geometry } = useMemo(() => {
+  const { geometry } = useMemo(() => {
     const count = 2000;
     const positions = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
     const randomOffsets = new Float32Array(count);
     
+    // Use seeded random for consistent values between server and client
+    const rand = seededRandom(42);
+    
     for (let i = 0; i < count; i++) {
-      const x = (Math.random() - 0.5) * width * 1.1;
-      const y = (Math.random() - 0.5) * height * 1.1;
-      const z = (Math.random() - 0.5) * 0.01;
+      const x = (rand() - 0.5) * width * 1.1;
+      const y = (rand() - 0.5) * height * 1.1;
+      const z = (rand() - 0.5) * 0.01;
       
       positions[i * 3] = x;
       positions[i * 3 + 1] = y;
       positions[i * 3 + 2] = z;
       
-      sizes[i] = Math.random() * 0.02 + 0.005;
-      randomOffsets[i] = Math.random();
+      sizes[i] = rand() * 0.02 + 0.005;
+      randomOffsets[i] = rand();
     }
     
     const geometry = new THREE.BufferGeometry();
@@ -405,7 +416,7 @@ function GlitchParticles({ width, height, scrollProgress }: { width: number; hei
     geometry.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
     geometry.setAttribute('aRandomOffset', new THREE.BufferAttribute(randomOffsets, 1));
     
-    return { positions, sizes, randomOffsets, geometry };
+    return { geometry };
   }, [width, height]);
   
   const uniforms = useMemo(() => ({
@@ -442,14 +453,23 @@ export default function ResumeGlitchScene({ scrollProgress }: ResumeGlitchSceneP
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
   const { viewport } = useThree();
+  const [isClient, setIsClient] = useState(false);
 
-  const texture = useMemo(() => buildResumeTexture(), []);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Only create texture on client side
+  const texture = useMemo(() => {
+    if (!isClient) return null;
+    return buildResumeTexture();
+  }, [isClient]);
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
     uProgress: { value: 1.0 },
     uNoiseScale: { value: 3.5 },
-    uTexture: { value: texture },
+    uTexture: { value: texture || new THREE.Texture() },
     uLightPos1: { value: new THREE.Vector3(4,5,5) },
     uLightPos2: { value: new THREE.Vector3(-4,-3,4) },
   }), [texture]);
@@ -482,6 +502,11 @@ export default function ResumeGlitchScene({ scrollProgress }: ResumeGlitchSceneP
     mat.uniforms.uLightPos2.value.x = -4 + Math.cos(timer.getElapsed() * 0.35) * 2;
     mat.uniforms.uLightPos2.value.y = -3 + Math.sin(timer.getElapsed() * 0.45) * 2;
   });
+
+  // Don't render until client-side to avoid hydration mismatch
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <group ref={groupRef}>

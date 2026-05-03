@@ -50,13 +50,13 @@ export default function Home() {
   // Responsive sizes based on screen width
   const getResponsiveSizes = useCallback(() => {
     const width = windowSize.width;
-    if (width <= 320) return { radius: 33, containerSize: 90, offsetDistance: 6, strokeWidth: 2 };
-    if (width <= 360) return { radius: 37, containerSize: 100, offsetDistance: 7, strokeWidth: 2 };
-    if (width <= 480) return { radius: 41, containerSize: 110, offsetDistance: 8, strokeWidth: 2.5 };
-    if (width <= 768) return { radius: 45, containerSize: 120, offsetDistance: 9, strokeWidth: 2.5 };
-    if (width <= 1024) return { radius: 49, containerSize: 130, offsetDistance: 10, strokeWidth: 3 };
-    if (width >= 2560) return { radius: 72, containerSize: 180, offsetDistance: 15, strokeWidth: 3 };
-    return { radius: 54, containerSize: 140, offsetDistance: 12, strokeWidth: 3 };
+    if (width <= 320) return { radius: 28, containerSize: 80, offsetDistance: 5, strokeWidth: 2 };
+    if (width <= 360) return { radius: 30, containerSize: 85, offsetDistance: 6, strokeWidth: 2 };
+    if (width <= 480) return { radius: 34, containerSize: 95, offsetDistance: 7, strokeWidth: 2 };
+    if (width <= 768) return { radius: 36, containerSize: 100, offsetDistance: 8, strokeWidth: 2.5 };
+    if (width <= 1024) return { radius: 40, containerSize: 110, offsetDistance: 9, strokeWidth: 2.5 };
+    if (width >= 2560) return { radius: 64, containerSize: 160, offsetDistance: 13, strokeWidth: 3 };
+    return { radius: 46, containerSize: 120, offsetDistance: 10, strokeWidth: 3 };
   }, [windowSize.width]);
 
   const { radius, containerSize, offsetDistance, strokeWidth } = getResponsiveSizes();

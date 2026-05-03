@@ -1,8 +1,8 @@
-//app/home/page.tsx
+// app/home/page.tsx
 
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import styles from "./page.module.css";
 import SayingPage from "../saying/page";
 
@@ -13,6 +13,31 @@ export default function HomePage() {
   const [moveToCorner, setMoveToCorner] = useState(false);
   const [showHero, setShowHero] = useState(false);
   const [showCurtain, setShowCurtain] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+
+  // Initialize and update window size
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Responsive sizes based on screen width
+  const getResponsiveSizes = useCallback(() => {
+    const width = windowSize.width;
+    if (width <= 360) return { radius: 45, nameFontSize: 13, charFontSize: 4.5, smallCharFontSize: 3.5 };
+    if (width <= 480) return { radius: 55, nameFontSize: 14, charFontSize: 5, smallCharFontSize: 4 };
+    if (width <= 768) return { radius: 65, nameFontSize: 16, charFontSize: 5.5, smallCharFontSize: 4.5 };
+    if (width <= 1024) return { radius: 80, nameFontSize: 18, charFontSize: 6, smallCharFontSize: 5 };
+    if (width >= 2560) return { radius: 120, nameFontSize: 24, charFontSize: 8, smallCharFontSize: 6 };
+    return { radius: 95, nameFontSize: 20, charFontSize: 7, smallCharFontSize: 5.5 };
+  }, [windowSize.width]);
+
+  const { radius } = getResponsiveSizes();
 
   useEffect(() => {
     const timer1 = setTimeout(() => {
@@ -68,14 +93,11 @@ export default function HomePage() {
   }, [animationPhase]);
 
   const text = "welcome to my portfolio ";
-  const radius = 95;
   const characters = text.split("");
 
   const characterPositions = useMemo(() => {
     const total = characters.length;
     const angleStep = 360 / total;
-
-    // ✅ center the full sentence properly on the circle
     const startAngle = -90 - (angleStep * total) / 2;
 
     return characters.map((_, index) => {
@@ -88,7 +110,7 @@ export default function HomePage() {
         baseAngle: angle,
       };
     });
-  }, [characters]);
+  }, [characters, radius]);
 
   const heroNameClasses = [
     styles.heroName,
@@ -111,30 +133,31 @@ export default function HomePage() {
         <div className={`${styles.curtain} ${showCurtain ? styles.curtainVisible : ''}`}></div>
         <div className={`${styles.animationContainer} ${moveToCorner ? styles.moveToTopLeft : ''}`}>
           <div className={styles.centerContent}>
-            <div className={`${styles.orbitWrapper} ${moveToCorner ? styles.orbitSmall : ''}`}>
-              {animationPhase >= 2 && (
-                <div 
-                  className={styles.orbitInner} 
-                  style={{ 
-                    opacity: orbitOpacity,
+            <div className={styles.orbitWrapper}>
+              <div className={styles.orbitInner} style={{ opacity: orbitOpacity }}>
+                {animationPhase >= 2 && (
+                  <div style={{ 
+                    position: 'relative',
+                    width: `${radius * 2}px`,
+                    height: `${radius * 2}px`,
                     transform: `rotate(${rotation}deg)`,
-                  }}
-                >
-                  {characters.map((char, index) => (
-                    <span
-                      key={index}
-                      className={`${styles.orbitChar} ${moveToCorner ? styles.orbitCharSmall : ''} ${showCurtain ? styles.orbitCharWhite : ''}`}
-                      style={{
-                        left: `${moveToCorner ? characterPositions[index].x * 0.6 : characterPositions[index].x}px`,
-                        top: `${moveToCorner ? characterPositions[index].y * 0.6 : characterPositions[index].y}px`,
-                        transform: `translate(-50%, -50%) rotate(${characterPositions[index].baseAngle + 90}deg)`,
-                      }}
-                    >
-                      {char === " " ? "\u00A0" : char}
-                    </span>
-                  ))}
-                </div>
-              )}
+                  }}>
+                    {characters.map((char, index) => (
+                      <span
+                        key={index}
+                        className={`${styles.orbitChar} ${moveToCorner ? styles.orbitCharSmall : ''} ${showCurtain ? styles.orbitCharWhite : ''}`}
+                        style={{
+                          left: `calc(50% + ${moveToCorner ? characterPositions[index].x * 0.6 : characterPositions[index].x}px)`,
+                          top: `calc(50% + ${moveToCorner ? characterPositions[index].y * 0.6 : characterPositions[index].y}px)`,
+                          transform: `translate(-50%, -50%) rotate(${characterPositions[index].baseAngle + 90}deg)`,
+                        }}
+                      >
+                        {char === " " ? "\u00A0" : char}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
               <h1 className={`${styles.name} ${animationPhase >= 1 ? styles.visible : ''} ${moveToCorner ? styles.nameSmall : ''} ${showCurtain ? styles.nameWhite : ''}`}>
                 Sital
               </h1>

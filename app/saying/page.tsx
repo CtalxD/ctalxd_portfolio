@@ -1,4 +1,5 @@
 // app/saying/page.tsx
+
 "use client";
 
 import { useEffect, useState, useRef, useCallback, Suspense } from "react";
@@ -10,12 +11,24 @@ export default function SayingPage() {
   const [isActive, setIsActive] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [textAnimationProgress, setTextAnimationProgress] = useState(1);
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const totalScrollDistance = useRef(0);
   const maxScrollDistance = 800;
   const textAnimationRef = useRef(1);
   const scrollDirection = useRef(0);
   const lastScrollTime = useRef(Date.now());
   const pauseTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // Initialize and update window size
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {

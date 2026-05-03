@@ -247,6 +247,41 @@
   }
 }
 
+/* Tablet and smaller desktops */
+@media (max-width: 1024px) {
+  .heroName {
+    font-size: 72px;
+    letter-spacing: 12px;
+  }
+  
+  .heroTitle {
+    font-size: 20px;
+    letter-spacing: 6px;
+  }
+  
+  .animationContainer.moveToTopLeft {
+    top: 60px;
+    left: 60px;
+  }
+  
+  .name {
+    font-size: 26px;
+  }
+  
+  .name.nameSmall {
+    font-size: 18px;
+  }
+  
+  .orbitChar {
+    font-size: 9px;
+  }
+  
+  .orbitChar.orbitCharSmall {
+    font-size: 6px;
+  }
+}
+
+/* Tablets */
 @media (max-width: 768px) {
   .heroName {
     font-size: 48px;
@@ -258,10 +293,190 @@
     letter-spacing: 6px;
     flex-direction: column;
     gap: 4px;
+    align-items: center;
+  }
+  
+  .heroContent {
+    gap: 16px;
+  }
+  
+  .heroDivider {
+    width: 30px;
   }
   
   .animationContainer.moveToTopLeft {
     top: 40px;
     left: 40px;
+  }
+  
+  .name {
+    font-size: 22px;
+    letter-spacing: 1.5px;
+  }
+  
+  .name.nameSmall {
+    font-size: 16px;
+    letter-spacing: 0.8px;
+  }
+  
+  .orbitChar {
+    font-size: 8px;
+  }
+  
+  .orbitChar.orbitCharSmall {
+    font-size: 5.5px;
+    letter-spacing: 0.2px;
+  }
+}
+
+/* Large phones */
+@media (max-width: 480px) {
+  .heroName {
+    font-size: 36px;
+    letter-spacing: 8px;
+  }
+  
+  .heroTitle {
+    font-size: 14px;
+    letter-spacing: 4px;
+  }
+  
+  .heroContent {
+    gap: 12px;
+  }
+  
+  .heroDivider {
+    width: 24px;
+  }
+  
+  .animationContainer.moveToTopLeft {
+    top: 30px;
+    left: 30px;
+  }
+  
+  .name {
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+  
+  .name.nameSmall {
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+  
+  .orbitChar {
+    font-size: 7px;
+    letter-spacing: 0.3px;
+  }
+  
+  .orbitChar.orbitCharSmall {
+    font-size: 5px;
+    letter-spacing: 0.1px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 360px) {
+  .heroName {
+    font-size: 28px;
+    letter-spacing: 6px;
+  }
+  
+  .heroTitle {
+    font-size: 12px;
+    letter-spacing: 3px;
+  }
+  
+  .heroContent {
+    gap: 10px;
+  }
+  
+  .heroDivider {
+    width: 20px;
+  }
+  
+  .animationContainer.moveToTopLeft {
+    top: 20px;
+    left: 20px;
+  }
+  
+  .name {
+    font-size: 18px;
+  }
+  
+  .name.nameSmall {
+    font-size: 13px;
+  }
+  
+  .orbitChar {
+    font-size: 6px;
+  }
+  
+  .orbitChar.orbitCharSmall {
+    font-size: 4.5px;
+  }
+}
+
+/* Landscape mode on mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .heroName {
+    font-size: 32px;
+    letter-spacing: 6px;
+  }
+  
+  .heroTitle {
+    font-size: 14px;
+    letter-spacing: 4px;
+  }
+  
+  .heroContent {
+    gap: 8px;
+  }
+  
+  .animationContainer.moveToTopLeft {
+    top: 20px;
+    left: 20px;
+  }
+  
+  .name {
+    font-size: 18px;
+  }
+  
+  .name.nameSmall {
+    font-size: 14px;
+  }
+}
+
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .heroName {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Ensure content doesn't overflow on very small screens */
+@media (max-width: 320px) {
+  .heroName {
+    font-size: 24px;
+    letter-spacing: 4px;
+  }
+  
+  .heroTitle {
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+  
+  .animationContainer.moveToTopLeft {
+    top: 15px;
+    left: 15px;
+  }
+  
+  .name {
+    font-size: 16px;
+  }
+  
+  .name.nameSmall {
+    font-size: 12px;
   }
 }

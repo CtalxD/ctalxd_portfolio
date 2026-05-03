@@ -153,10 +153,10 @@
 
 .heroName {
   font-family: "Cormorant Garamond", serif;
-  font-size: clamp(28px, 5vw, 96px);
+  font-size: 86px;
   font-weight: 600;
   color: #1a1a1a;
-  letter-spacing: clamp(4px, 1vw, 16px);
+  letter-spacing: 14px;
   text-transform: uppercase;
   margin: 0;
   line-height: 1;
@@ -193,7 +193,7 @@
 }
 
 .heroDivider {
-  width: clamp(20px, 3vw, 40px);
+  width: 40px;
   height: 1px;
   background-color: #1a1a1a;
   opacity: 0;
@@ -218,10 +218,10 @@
 
 .heroTitle {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(11px, 1.5vw, 25px);
+  font-size: 15px;
   font-weight: 400;
   color: #666666;
-  letter-spacing: clamp(2px, 0.5vw, 8px);
+  letter-spacing: 6px;
   text-transform: uppercase;
   margin: 0;
   display: flex;

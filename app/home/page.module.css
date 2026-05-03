@@ -132,6 +132,10 @@
   transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
   z-index: 10;
+  width: 100%;
+  max-width: 100vw;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .heroSection.heroVisible {
@@ -144,14 +148,15 @@
   flex-direction: column;
   align-items: center;
   gap: 24px;
+  max-width: 100%;
 }
 
 .heroName {
   font-family: "Cormorant Garamond", serif;
-  font-size: 96px;
+  font-size: clamp(28px, 5vw, 96px);
   font-weight: 600;
   color: #1a1a1a;
-  letter-spacing: 16px;
+  letter-spacing: clamp(4px, 1vw, 16px);
   text-transform: uppercase;
   margin: 0;
   line-height: 1;
@@ -159,8 +164,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .heroName.heroNameWhite {
@@ -171,6 +178,7 @@
   display: inline-block;
   animation: charRise 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: calc(0.3s + (var(--char-index) * 0.06s));
+  flex-shrink: 0;
 }
 
 @keyframes charRise {
@@ -185,7 +193,7 @@
 }
 
 .heroDivider {
-  width: 40px;
+  width: clamp(20px, 3vw, 40px);
   height: 1px;
   background-color: #1a1a1a;
   opacity: 0;
@@ -210,14 +218,17 @@
 
 .heroTitle {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 25px;
+  font-size: clamp(11px, 1.5vw, 25px);
   font-weight: 400;
   color: #666666;
-  letter-spacing: 8px;
+  letter-spacing: clamp(2px, 0.5vw, 8px);
   text-transform: uppercase;
   margin: 0;
   display: flex;
   gap: 0.5rem;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  justify-content: center;
 }
 
 .heroTitle.heroTitleDark {
@@ -228,6 +239,7 @@
   display: inline-block;
   animation: wordSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: 1.4s;
+  flex-shrink: 0;
 }
 
 .heroTitleWord:last-child {
@@ -247,21 +259,143 @@
   }
 }
 
-@media (max-width: 768px) {
+/* Responsive adjustments - maintaining single line */
+@media (max-width: 1200px) {
   .heroName {
-    font-size: 48px;
-    letter-spacing: 10px;
+    font-size: clamp(28px, 6vw, 72px);
+    letter-spacing: clamp(4px, 1.2vw, 12px);
   }
   
   .heroTitle {
-    font-size: 16px;
-    letter-spacing: 6px;
-    flex-direction: column;
-    gap: 4px;
+    font-size: clamp(11px, 1.8vw, 20px);
+    letter-spacing: clamp(2px, 0.6vw, 6px);
+  }
+}
+
+@media (max-width: 768px) {
+  .heroName {
+    font-size: clamp(24px, 7vw, 48px);
+    letter-spacing: clamp(3px, 1.5vw, 10px);
+  }
+  
+  .heroTitle {
+    font-size: clamp(10px, 2vw, 16px);
+    letter-spacing: clamp(2px, 0.8vw, 6px);
+    gap: 0.3rem;
+  }
+  
+  .heroContent {
+    gap: 16px;
   }
   
   .animationContainer.moveToTopLeft {
     top: 40px;
     left: 40px;
+  }
+  
+  .name {
+    font-size: 22px;
+  }
+  
+  .name.nameSmall {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroName {
+    font-size: clamp(20px, 8vw, 36px);
+    letter-spacing: clamp(2px, 2vw, 8px);
+  }
+  
+  .heroTitle {
+    font-size: clamp(9px, 2.5vw, 14px);
+    letter-spacing: clamp(1px, 1vw, 4px);
+    gap: 0.2rem;
+  }
+  
+  .heroContent {
+    gap: 12px;
+  }
+  
+  .animationContainer.moveToTopLeft {
+    top: 30px;
+    left: 30px;
+  }
+  
+  .name {
+    font-size: 20px;
+  }
+  
+  .name.nameSmall {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .heroName {
+    font-size: clamp(16px, 9vw, 28px);
+    letter-spacing: clamp(1px, 2.5vw, 6px);
+  }
+  
+  .heroTitle {
+    font-size: clamp(8px, 3vw, 12px);
+    letter-spacing: clamp(1px, 1.5vw, 3px);
+    gap: 0.15rem;
+  }
+  
+  .heroContent {
+    gap: 10px;
+  }
+  
+  .animationContainer.moveToTopLeft {
+    top: 20px;
+    left: 20px;
+  }
+  
+  .name {
+    font-size: 18px;
+  }
+  
+  .name.nameSmall {
+    font-size: 13px;
+  }
+}
+
+/* Landscape mode on mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .heroName {
+    font-size: clamp(20px, 5vh, 36px);
+    letter-spacing: clamp(2px, 0.5vh, 6px);
+  }
+  
+  .heroTitle {
+    font-size: clamp(8px, 2vh, 14px);
+    letter-spacing: clamp(1px, 0.3vh, 4px);
+  }
+  
+  .heroContent {
+    gap: 8px;
+  }
+  
+  .animationContainer.moveToTopLeft {
+    top: 15px;
+    left: 20px;
+  }
+  
+  .name {
+    font-size: 16px;
+  }
+  
+  .name.nameSmall {
+    font-size: 12px;
+  }
+}
+
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .heroName {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }

@@ -2,51 +2,69 @@
 
 "use client";
 
-import { useEffect, useState, useRef, useCallback, Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useEffect, useState, useRef, useCallback } from "react";
 import styles from "./page.module.css";
-import ResumeGlitchScene from "../components/ResumeGlitchScene";
 
-export default function SayingPage() {
-  const [isActive, setIsActive] = useState(false);
+interface SayingPageProps {
+  onComplete?: () => void;
+  isActive?: boolean;
+}
+
+export default function SayingPage({ onComplete, isActive = true }: SayingPageProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [textAnimationProgress, setTextAnimationProgress] = useState(1);
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const [isComplete, setIsComplete] = useState(false);
   const totalScrollDistance = useRef(0);
   const maxScrollDistance = 800;
   const textAnimationRef = useRef(1);
   const scrollDirection = useRef(0);
   const lastScrollTime = useRef(Date.now());
   const pauseTimeout = useRef<NodeJS.Timeout | null>(null);
+  const sayingRef = useRef<HTMLDivElement>(null);
+  const onCompleteRef = useRef(onComplete);
+  const hasCompletedRef = useRef(false);
+  const isTransitioningRef = useRef(false);
 
-  // Initialize and update window size
+  // Keep the callback ref in sync
   useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-    };
-    
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsActive(true);
-    }, 10000);
-
-    return () => clearTimeout(timer);
-  }, []);
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   const updateScrollProgress = useCallback((delta: number) => {
     setScrollProgress((prevProgress) => {
       const newTotal = totalScrollDistance.current + delta;
       const clampedTotal = Math.max(0, Math.min(newTotal, maxScrollDistance));
       totalScrollDistance.current = clampedTotal;
-
-      return clampedTotal / maxScrollDistance;
+      const progress = clampedTotal / maxScrollDistance;
+      
+      // Only set isComplete once, don't call onComplete here
+      if (progress >= 1 && !hasCompletedRef.current) {
+        hasCompletedRef.current = true;
+        isTransitioningRef.current = true;
+        setTimeout(() => {
+          setIsComplete(true);
+          // Allow normal scrolling after transition
+          setTimeout(() => {
+            isTransitioningRef.current = false;
+          }, 300);
+        }, 0);
+      }
+      
+      return progress;
     });
   }, []);
+
+  // Handle the completion callback in an effect to avoid setState during render
+  useEffect(() => {
+    if (isComplete && onCompleteRef.current) {
+      const timer = setTimeout(() => {
+        if (onCompleteRef.current) {
+          onCompleteRef.current();
+        }
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isComplete]);
 
   useEffect(() => {
     if (!isActive) return;
@@ -100,25 +118,32 @@ export default function SayingPage() {
     let pendingDelta = 0;
 
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
+      // Only handle wheel events when we're in the saying page phase
+      if (!isComplete || isTransitioningRef.current) {
+        e.preventDefault();
+        
+        // Don't process scroll if we're transitioning
+        if (isTransitioningRef.current) return;
+        
+        scrollDirection.current = e.deltaY;
+        lastScrollTime.current = Date.now();
 
-      scrollDirection.current = e.deltaY;
-      lastScrollTime.current = Date.now();
+        if (pauseTimeout.current) {
+          clearTimeout(pauseTimeout.current);
+        }
 
-      if (pauseTimeout.current) {
-        clearTimeout(pauseTimeout.current);
-      }
+        pauseTimeout.current = setTimeout(() => {
+          scrollDirection.current = 0;
+        }, 150);
 
-      pauseTimeout.current = setTimeout(() => {
-        scrollDirection.current = 0;
-      }, 150);
-
-      if (Math.abs(e.deltaY) > 0) {
-        pendingDelta += e.deltaY;
+        if (Math.abs(e.deltaY) > 0) {
+          pendingDelta += e.deltaY;
+        }
       }
     };
 
     const handleTouchStart = (e: TouchEvent) => {
+      if (isTransitioningRef.current) return;
       const touch = e.touches[0];
       (document.body as any).dataset.touchStartY = touch.clientY.toString();
       lastScrollTime.current = Date.now();
@@ -129,6 +154,9 @@ export default function SayingPage() {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
+      if (isComplete && !isTransitioningRef.current) return;
+      if (isTransitioningRef.current) return;
+      
       const touchStartY = parseFloat(
         (document.body as any).dataset.touchStartY || "0"
       );
@@ -184,7 +212,7 @@ export default function SayingPage() {
         clearTimeout(pauseTimeout.current);
       }
     };
-  }, [isActive, updateScrollProgress]);
+  }, [isActive, isComplete, updateScrollProgress]);
 
   const getTextStyle = (baseDelay: number) => {
     const progress = textAnimationProgress;
@@ -206,10 +234,12 @@ export default function SayingPage() {
   };
 
   return (
-    <main
+    <div
+      ref={sayingRef}
       className={styles.container}
       style={{
-        transform: `translateY(${100 - scrollProgress * 100}%)`,
+        position: 'relative',
+        marginTop: '100vh',
       }}
     >
       <div className={styles.leftContent}>
@@ -235,58 +265,6 @@ export default function SayingPage() {
           </p>
         </div>
       </div>
-
-      <div className={styles.rightContent}>
-        <Canvas
-          camera={{
-            position: [0, 0, 2.4],
-            fov: 42,
-            near: 0.1,
-            far: 10,
-          }}
-          style={{ background: "transparent" }}
-          gl={{
-            antialias: true,
-            alpha: true,
-            preserveDrawingBuffer: false,
-            powerPreference: "high-performance",
-          }}
-          dpr={[1, 2]}
-          performance={{ min: 0.5 }}
-        >
-          <Suspense fallback={null}>
-            <color attach="background" args={["#000000"]} />
-            <fog attach="fog" args={["#000000", 4, 10]} />
-
-            <ambientLight intensity={0.8} />
-            <directionalLight
-              position={[3, 4, 4]}
-              intensity={1.4}
-              castShadow={false}
-            />
-            <directionalLight
-              position={[-4, -2, 3]}
-              intensity={0.6}
-              castShadow={false}
-            />
-            <pointLight position={[0, 0, 2.5]} intensity={0.5} />
-            <pointLight
-              position={[2, -2, 2]}
-              intensity={0.3}
-              color="#c8d4e8"
-            />
-            <spotLight
-              position={[2, 3, 3]}
-              angle={0.4}
-              penumbra={1}
-              intensity={0.7}
-              castShadow={false}
-            />
-
-            <ResumeGlitchScene scrollProgress={scrollProgress} />
-          </Suspense>
-        </Canvas>
-      </div>
-    </main>
+    </div>
   );
 }

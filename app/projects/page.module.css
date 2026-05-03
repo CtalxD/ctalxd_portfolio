@@ -1,0 +1,195 @@
+/* app/projects/page.module.css */
+
+.container {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 200;
+}
+
+.content {
+  width: 100%;
+  max-width: 1400px;
+  padding: clamp(80px, 15vh, 160px) clamp(20px, 8vw, 100px);
+}
+
+.header {
+  margin-bottom: clamp(60px, 10vh, 100px);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 500;
+  color: #000000;
+  letter-spacing: clamp(2px, 0.3vw, 4px);
+  margin: 0 0 clamp(12px, 2vh, 20px) 0;
+  line-height: 1.1;
+}
+
+.subtitle {
+  font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", "Menlo", "Courier New", monospace;
+  font-size: clamp(12px, 1.5vw, 16px);
+  font-weight: 400;
+  color: #666666;
+  letter-spacing: clamp(0.4px, 0.08vw, 0.8px);
+  margin: 0;
+}
+
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+}
+
+.projectCard {
+  border-top: 1px solid #e0e0e0;
+  padding-top: clamp(24px, 4vh, 40px);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.projectCard.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.projectCard:hover {
+  border-top-color: #000000;
+}
+
+.projectCard:hover .projectArrow {
+  transform: translateX(8px);
+  color: #000000;
+}
+
+.projectContent {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.5vh, 12px);
+}
+
+.projectYear {
+  font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", "Menlo", "Courier New", monospace;
+  font-size: clamp(10px, 1.2vw, 12px);
+  font-weight: 400;
+  color: #999999;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.projectTitle {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(24px, 3.5vw, 40px);
+  font-weight: 500;
+  color: #000000;
+  margin: 0;
+  letter-spacing: clamp(0.5px, 0.1vw, 1px);
+  line-height: 1.2;
+}
+
+.projectCategory {
+  font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", "Menlo", "Courier New", monospace;
+  font-size: clamp(10px, 1.2vw, 13px);
+  font-weight: 400;
+  color: #666666;
+  letter-spacing: 0.5px;
+}
+
+.projectDescription {
+  font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", "Menlo", "Courier New", monospace;
+  font-size: clamp(11px, 1.3vw, 14px);
+  font-weight: 400;
+  color: #888888;
+  letter-spacing: 0.3px;
+  line-height: 1.6;
+  margin: clamp(4px, 1vh, 8px) 0 0 0;
+  max-width: 400px;
+}
+
+.projectArrow {
+  font-size: clamp(20px, 2.5vw, 28px);
+  color: #cccccc;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: clamp(8px, 1.5vh, 12px);
+}
+
+/* Tablet and smaller desktops */
+@media (max-width: 1024px) {
+  .projectsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+  .projectsGrid {
+    grid-template-columns: 1fr;
+    gap: clamp(16px, 3vw, 30px);
+  }
+
+  .projectDescription {
+    max-width: 100%;
+  }
+}
+
+/* Large phones */
+@media (max-width: 480px) {
+  .content {
+    padding: clamp(60px, 12vh, 100px) clamp(15px, 5vw, 25px);
+  }
+
+  .projectCard {
+    padding-top: clamp(20px, 3vh, 30px);
+  }
+
+  .projectDescription {
+    max-width: 100%;
+  }
+}
+
+/* Small phones */
+@media (max-width: 360px) {
+  .content {
+    padding: clamp(40px, 10vh, 80px) clamp(12px, 4vw, 20px);
+  }
+}
+
+/* Landscape mode on mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .content {
+    padding: clamp(40px, 10vh, 80px) clamp(20px, 5vw, 40px);
+  }
+}
+
+/* Large Desktop (4K) */
+@media (min-width: 2560px) {
+  .content {
+    max-width: 1800px;
+  }
+  
+  .projectsGrid {
+    gap: 50px;
+  }
+  
+  .projectDescription {
+    max-width: 600px;
+  }
+}

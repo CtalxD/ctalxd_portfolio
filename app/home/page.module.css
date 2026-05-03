@@ -26,6 +26,12 @@
   pointer-events: none;
 }
 
+.mainWrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
 .curtain.curtainVisible {
   transform: translateY(0);
 }

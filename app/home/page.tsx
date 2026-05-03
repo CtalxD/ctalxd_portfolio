@@ -2,9 +2,10 @@
 
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import styles from "./page.module.css";
 import SayingPage from "../saying/page";
+import ProjectsPage from "../projects/page";
 
 export default function HomePage() {
   const [animationPhase, setAnimationPhase] = useState(0);
@@ -14,6 +15,9 @@ export default function HomePage() {
   const [showHero, setShowHero] = useState(false);
   const [showCurtain, setShowCurtain] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const [showSaying, setShowSaying] = useState(false);
+  const [showProjects, setShowProjects] = useState(false);
+  const mainRef = useRef<HTMLDivElement>(null);
 
   // Initialize and update window size
   useEffect(() => {
@@ -59,6 +63,16 @@ export default function HomePage() {
     const timer5 = setTimeout(() => {
       setShowCurtain(true);
     }, 8500);
+
+    // Show saying overlay at 9.5 seconds
+    const timer6 = setTimeout(() => {
+      setShowSaying(true);
+    }, 800);
+
+    // Show projects overlay at 12 seconds
+    const timer7 = setTimeout(() => {
+      setShowProjects(true);
+    }, 800);
     
     return () => {
       clearTimeout(timer1);
@@ -66,6 +80,8 @@ export default function HomePage() {
       clearTimeout(timer3);
       clearTimeout(timer4);
       clearTimeout(timer5);
+      clearTimeout(timer6);
+      clearTimeout(timer7);
     };
   }, []);
 
@@ -128,7 +144,7 @@ export default function HomePage() {
   ].filter(Boolean).join(' ');
 
   return (
-    <>
+    <div ref={mainRef} className={styles.mainWrapper}>
       <main className={styles.container}>
         <div className={`${styles.curtain} ${showCurtain ? styles.curtainVisible : ''}`}></div>
         <div className={`${styles.animationContainer} ${moveToCorner ? styles.moveToTopLeft : ''}`}>
@@ -188,7 +204,10 @@ export default function HomePage() {
           </div>
         </div>
       </main>
-      <SayingPage />
-    </>
+      
+      {/* Fixed overlay layers - always rendered, just fade in/out */}
+      <SayingPage isActive={showSaying} />
+      <ProjectsPage isActive={showProjects} />
+    </div>
   );
 }

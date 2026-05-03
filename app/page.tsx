@@ -29,6 +29,7 @@ interface TrailPoint {
 export default function Home() {
   const [displayPercentage, setDisplayPercentage] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const animationFrameRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const smoothFrameRef = useRef<number | null>(null);
@@ -46,9 +47,33 @@ export default function Home() {
   const router = useRouter();
   const duration = 3000;
 
-  const radius = 54;
+  // Responsive sizes based on screen width
+  const getResponsiveSizes = useCallback(() => {
+    const width = windowSize.width;
+    if (width <= 320) return { radius: 33, containerSize: 90, offsetDistance: 6, strokeWidth: 2 };
+    if (width <= 360) return { radius: 37, containerSize: 100, offsetDistance: 7, strokeWidth: 2 };
+    if (width <= 480) return { radius: 41, containerSize: 110, offsetDistance: 8, strokeWidth: 2.5 };
+    if (width <= 768) return { radius: 45, containerSize: 120, offsetDistance: 9, strokeWidth: 2.5 };
+    if (width <= 1024) return { radius: 49, containerSize: 130, offsetDistance: 10, strokeWidth: 3 };
+    if (width >= 2560) return { radius: 72, containerSize: 180, offsetDistance: 15, strokeWidth: 3 };
+    return { radius: 54, containerSize: 140, offsetDistance: 12, strokeWidth: 3 };
+  }, [windowSize.width]);
+
+  const { radius, containerSize, offsetDistance, strokeWidth } = getResponsiveSizes();
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (displayPercentage / 100) * circumference;
+  const center = containerSize / 2;
+
+  // Initialize and update window size
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Crazy cursor system
   useEffect(() => {
@@ -67,7 +92,8 @@ export default function Home() {
     resize();
 
     // Magnetic field detection
-    const circleCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 - 20 };
+    const getCircleCenter = () => ({ x: window.innerWidth / 2, y: window.innerHeight / 2 - 20 });
+    let circleCenter = getCircleCenter();
     
     const handleMouseMove = (e: MouseEvent) => {
       mouseOnScreenRef.current = true;
@@ -83,6 +109,7 @@ export default function Home() {
       };
 
       // Magnetic field calculation
+      circleCenter = getCircleCenter();
       const dx = e.clientX - circleCenter.x;
       const dy = e.clientY - circleCenter.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
@@ -138,7 +165,6 @@ export default function Home() {
 
     const handleMouseEnter = (e: MouseEvent) => {
       mouseOnScreenRef.current = true;
-      // Initialize cursor position on enter
       cursorRef.current = {
         x: e.clientX,
         y: e.clientY,
@@ -149,11 +175,9 @@ export default function Home() {
     };
 
     const animate = () => {
-      // Always clear canvases
       cursorCtx.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height);
       bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
 
-      // Only render cursor and effects if mouse is on screen
       if (!mouseOnScreenRef.current) {
         cursorAnimationRef.current = requestAnimationFrame(animate);
         return;
@@ -180,7 +204,7 @@ export default function Home() {
 
         particle.x += particle.vx;
         particle.y += particle.vy;
-        particle.vy += 0.05; // gravity
+        particle.vy += 0.05;
         particle.vx *= 0.99;
         particle.rotation += particle.rotationSpeed;
 
@@ -212,7 +236,6 @@ export default function Home() {
             cursorCtx.lineCap = 'round';
             cursorCtx.stroke();
 
-            // Glow effect
             cursorCtx.beginPath();
             cursorCtx.moveTo(prevPoint.x, prevPoint.y);
             cursorCtx.lineTo(point.x, point.y);
@@ -230,12 +253,10 @@ export default function Home() {
       cursorCtx.save();
       cursorCtx.translate(x, y);
       
-      // Rotate based on magnetic field
       if (magneticInfluence > 0) {
         cursorCtx.rotate(magneticRef.current.angle + Math.PI / 4);
       }
 
-      // Outer geometric shape (diamond/cube)
       cursorCtx.beginPath();
       const size = 8 + magneticInfluence * 4;
       cursorCtx.moveTo(0, -size);
@@ -249,13 +270,11 @@ export default function Home() {
       cursorCtx.lineWidth = 1;
       cursorCtx.stroke();
 
-      // Inner dot
       cursorCtx.beginPath();
       cursorCtx.arc(0, 0, 2, 0, Math.PI * 2);
       cursorCtx.fillStyle = '#fafaf8';
       cursorCtx.fill();
 
-      // Rotating ring
       const ringRotation = Date.now() * 0.002;
       cursorCtx.beginPath();
       cursorCtx.arc(0, 0, size + 6, ringRotation, ringRotation + Math.PI * 1.5);
@@ -263,7 +282,6 @@ export default function Home() {
       cursorCtx.lineWidth = 1.5;
       cursorCtx.stroke();
 
-      // Second rotating ring (opposite direction)
       cursorCtx.beginPath();
       cursorCtx.arc(0, 0, size + 10, -ringRotation, -ringRotation + Math.PI * 1.2);
       cursorCtx.strokeStyle = 'rgba(26, 26, 26, 0.2)';
@@ -272,7 +290,6 @@ export default function Home() {
 
       cursorCtx.restore();
 
-      // Clean up trail
       trailRef.current = trailRef.current.filter(point => point.alpha > 0.01);
 
       cursorAnimationRef.current = requestAnimationFrame(animate);
@@ -384,15 +401,12 @@ export default function Home() {
   }, [isRunning, animate2]);
 
   const getCounterPosition = () => {
-    const offsetDistance = 12;
     const angle = (displayPercentage / 100) * 360 - 90;
     const radian = (angle * Math.PI) / 180;
-    const circleCenterX = 70;
-    const circleCenterY = 70;
     const distanceFromCenter = radius + offsetDistance;
     
-    const x = circleCenterX + distanceFromCenter * Math.cos(radian);
-    const y = circleCenterY + distanceFromCenter * Math.sin(radian);
+    const x = center + distanceFromCenter * Math.cos(radian);
+    const y = center + distanceFromCenter * Math.sin(radian);
     
     return {
       left: `${x}px`,
@@ -413,30 +427,40 @@ export default function Home() {
       <div className={styles.circleWrapper}>
         <div className={styles.circleContainer}>
           {/* Background track */}
-          <svg width="140" height="140" className={styles.svg}>
+          <svg 
+            width={containerSize} 
+            height={containerSize} 
+            className={styles.svg}
+            viewBox={`0 0 ${containerSize} ${containerSize}`}
+          >
             <circle
-              cx="70"
-              cy="70"
+              cx={center}
+              cy={center}
               r={radius}
               fill="none"
               stroke="#e8e8e0"
-              strokeWidth="3"
+              strokeWidth={strokeWidth}
             />
           </svg>
 
           {/* Progress circle */}
-          <svg width="140" height="140" className={styles.svg}>
+          <svg 
+            width={containerSize} 
+            height={containerSize} 
+            className={styles.svg}
+            viewBox={`0 0 ${containerSize} ${containerSize}`}
+          >
             <circle
-              cx="70"
-              cy="70"
+              cx={center}
+              cy={center}
               r={radius}
               fill="none"
               stroke="#2a2a2a"
-              strokeWidth="3"
+              strokeWidth={strokeWidth}
               strokeLinecap="round"
               strokeDasharray={circumference}
               strokeDashoffset={offset}
-              transform="rotate(-90 70 70)"
+              transform={`rotate(-90 ${center} ${center})`}
             />
           </svg>
 

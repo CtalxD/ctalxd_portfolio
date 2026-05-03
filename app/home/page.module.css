@@ -75,7 +75,7 @@
 
 .name {
   font-family: "Inknut Antiqua", serif;
-  font-size: 30px;
+  font-size: 24px;
   color: #1a1a1a;
   letter-spacing: 2px;
   opacity: 0;
@@ -93,7 +93,7 @@
 }
 
 .name.nameSmall {
-  font-size: 20px;
+  font-size: 16px;
   letter-spacing: 1px;
 }
 
@@ -104,7 +104,7 @@
 .orbitChar {
   position: absolute;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 10px;
+  font-size: 8px;
   font-weight: 600;
   color: #1a1a1a;
   letter-spacing: 0.5px;
@@ -116,7 +116,7 @@
 }
 
 .orbitChar.orbitCharSmall {
-  font-size: 7px;
+  font-size: 6px;
   letter-spacing: 0.3px;
 }
 
@@ -269,19 +269,19 @@
   }
 
   .name {
-    font-size: 26px;
+    font-size: 22px;
   }
 
   .name.nameSmall {
-    font-size: 18px;
+    font-size: 14px;
   }
 
   .orbitChar {
-    font-size: 9px;
+    font-size: 7px;
   }
 
   .orbitChar.orbitCharSmall {
-    font-size: 6px;
+    font-size: 5px;
   }
 }
 
@@ -297,21 +297,21 @@
   }
 
   .name {
-    font-size: 22px;
+    font-size: 18px;
     letter-spacing: 1.5px;
   }
 
   .name.nameSmall {
-    font-size: 16px;
+    font-size: 13px;
     letter-spacing: 0.8px;
   }
 
   .orbitChar {
-    font-size: 8px;
+    font-size: 7px;
   }
 
   .orbitChar.orbitCharSmall {
-    font-size: 5.5px;
+    font-size: 5px;
     letter-spacing: 0.2px;
   }
 }
@@ -328,22 +328,22 @@
   }
 
   .name {
-    font-size: 20px;
+    font-size: 16px;
     letter-spacing: 1px;
   }
 
   .name.nameSmall {
-    font-size: 14px;
+    font-size: 12px;
     letter-spacing: 0.5px;
   }
 
   .orbitChar {
-    font-size: 7px;
+    font-size: 6px;
     letter-spacing: 0.3px;
   }
 
   .orbitChar.orbitCharSmall {
-    font-size: 5px;
+    font-size: 4.5px;
     letter-spacing: 0.1px;
   }
 }
@@ -360,19 +360,19 @@
   }
 
   .name {
-    font-size: 18px;
+    font-size: 15px;
   }
 
   .name.nameSmall {
-    font-size: 13px;
+    font-size: 11px;
   }
 
   .orbitChar {
-    font-size: 6px;
+    font-size: 5px;
   }
 
   .orbitChar.orbitCharSmall {
-    font-size: 4.5px;
+    font-size: 4px;
   }
 }
 
@@ -388,11 +388,11 @@
   }
 
   .name {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .name.nameSmall {
-    font-size: 12px;
+    font-size: 11px;
   }
 }
 

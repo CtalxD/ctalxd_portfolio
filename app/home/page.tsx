@@ -29,12 +29,12 @@ export default function HomePage() {
   // Responsive sizes based on screen width
   const getResponsiveSizes = useCallback(() => {
     const width = windowSize.width;
-    if (width <= 360) return { radius: 45, nameFontSize: 13, charFontSize: 4.5, smallCharFontSize: 3.5 };
-    if (width <= 480) return { radius: 55, nameFontSize: 14, charFontSize: 5, smallCharFontSize: 4 };
-    if (width <= 768) return { radius: 65, nameFontSize: 16, charFontSize: 5.5, smallCharFontSize: 4.5 };
-    if (width <= 1024) return { radius: 80, nameFontSize: 18, charFontSize: 6, smallCharFontSize: 5 };
-    if (width >= 2560) return { radius: 120, nameFontSize: 24, charFontSize: 8, smallCharFontSize: 6 };
-    return { radius: 95, nameFontSize: 20, charFontSize: 7, smallCharFontSize: 5.5 };
+    if (width <= 360) return { radius: 38 };
+    if (width <= 480) return { radius: 45 };
+    if (width <= 768) return { radius: 55 };
+    if (width <= 1024) return { radius: 68 };
+    if (width >= 2560) return { radius: 105 };
+    return { radius: 78 };
   }, [windowSize.width]);
 
   const { radius } = getResponsiveSizes();

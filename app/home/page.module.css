@@ -54,8 +54,6 @@
 
 .orbitWrapper {
   position: relative;
-  width: 0;
-  height: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -64,28 +62,34 @@
 }
 
 .orbitInner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .name {
-  position: absolute;
   font-family: "Inknut Antiqua", serif;
   font-size: 30px;
   color: #1a1a1a;
   letter-spacing: 2px;
   opacity: 0;
-  transform: translate(-50%, -50%) translateY(100vh);
+  transform: translateY(100vh);
   transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), font-size 1.5s cubic-bezier(0.22, 0.61, 0.36, 1), letter-spacing 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
   margin: 0;
   z-index: 2;
   white-space: nowrap;
-  top: 0;
-  left: 0;
+  position: relative;
 }
 
 .name.visible {
   opacity: 1;
-  transform: translate(-50%, -50%) translateY(0);
+  transform: translateY(0);
 }
 
 .name.nameSmall {
@@ -99,8 +103,6 @@
 
 .orbitChar {
   position: absolute;
-  top: 0;
-  left: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
   font-weight: 600;
@@ -153,10 +155,10 @@
 
 .heroName {
   font-family: "Cormorant Garamond", serif;
-  font-size: 86px;
+  font-size: clamp(28px, 5vw, 86px);
   font-weight: 600;
   color: #1a1a1a;
-  letter-spacing: 14px;
+  letter-spacing: clamp(4px, 1vw, 14px);
   text-transform: uppercase;
   margin: 0;
   line-height: 1;
@@ -193,7 +195,7 @@
 }
 
 .heroDivider {
-  width: 40px;
+  width: clamp(20px, 3vw, 40px);
   height: 1px;
   background-color: #1a1a1a;
   opacity: 0;
@@ -218,10 +220,10 @@
 
 .heroTitle {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 15px;
+  font-size: clamp(9px, 1.5vw, 15px);
   font-weight: 400;
   color: #666666;
-  letter-spacing: 6px;
+  letter-spacing: clamp(2px, 0.5vw, 6px);
   text-transform: uppercase;
   margin: 0;
   display: flex;
@@ -259,134 +261,136 @@
   }
 }
 
-/* Responsive adjustments - maintaining single line */
-@media (max-width: 1200px) {
-  .heroName {
-    font-size: clamp(28px, 6vw, 72px);
-    letter-spacing: clamp(4px, 1.2vw, 12px);
+/* Tablet and smaller desktops */
+@media (max-width: 1024px) {
+  .animationContainer.moveToTopLeft {
+    top: 60px;
+    left: 60px;
   }
-  
-  .heroTitle {
-    font-size: clamp(11px, 1.8vw, 20px);
-    letter-spacing: clamp(2px, 0.6vw, 6px);
+
+  .name {
+    font-size: 26px;
+  }
+
+  .name.nameSmall {
+    font-size: 18px;
+  }
+
+  .orbitChar {
+    font-size: 9px;
+  }
+
+  .orbitChar.orbitCharSmall {
+    font-size: 6px;
   }
 }
 
+/* Tablets */
 @media (max-width: 768px) {
-  .heroName {
-    font-size: clamp(24px, 7vw, 48px);
-    letter-spacing: clamp(3px, 1.5vw, 10px);
-  }
-  
-  .heroTitle {
-    font-size: clamp(10px, 2vw, 16px);
-    letter-spacing: clamp(2px, 0.8vw, 6px);
-    gap: 0.3rem;
-  }
-  
   .heroContent {
     gap: 16px;
   }
-  
+
   .animationContainer.moveToTopLeft {
     top: 40px;
     left: 40px;
   }
-  
+
   .name {
     font-size: 22px;
+    letter-spacing: 1.5px;
   }
-  
+
   .name.nameSmall {
     font-size: 16px;
+    letter-spacing: 0.8px;
+  }
+
+  .orbitChar {
+    font-size: 8px;
+  }
+
+  .orbitChar.orbitCharSmall {
+    font-size: 5.5px;
+    letter-spacing: 0.2px;
   }
 }
 
+/* Large phones */
 @media (max-width: 480px) {
-  .heroName {
-    font-size: clamp(20px, 8vw, 36px);
-    letter-spacing: clamp(2px, 2vw, 8px);
-  }
-  
-  .heroTitle {
-    font-size: clamp(9px, 2.5vw, 14px);
-    letter-spacing: clamp(1px, 1vw, 4px);
-    gap: 0.2rem;
-  }
-  
   .heroContent {
     gap: 12px;
   }
-  
+
   .animationContainer.moveToTopLeft {
     top: 30px;
     left: 30px;
   }
-  
+
   .name {
     font-size: 20px;
+    letter-spacing: 1px;
   }
-  
+
   .name.nameSmall {
     font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+
+  .orbitChar {
+    font-size: 7px;
+    letter-spacing: 0.3px;
+  }
+
+  .orbitChar.orbitCharSmall {
+    font-size: 5px;
+    letter-spacing: 0.1px;
   }
 }
 
+/* Small phones */
 @media (max-width: 360px) {
-  .heroName {
-    font-size: clamp(16px, 9vw, 28px);
-    letter-spacing: clamp(1px, 2.5vw, 6px);
-  }
-  
-  .heroTitle {
-    font-size: clamp(8px, 3vw, 12px);
-    letter-spacing: clamp(1px, 1.5vw, 3px);
-    gap: 0.15rem;
-  }
-  
   .heroContent {
     gap: 10px;
   }
-  
+
   .animationContainer.moveToTopLeft {
     top: 20px;
     left: 20px;
   }
-  
+
   .name {
     font-size: 18px;
   }
-  
+
   .name.nameSmall {
     font-size: 13px;
+  }
+
+  .orbitChar {
+    font-size: 6px;
+  }
+
+  .orbitChar.orbitCharSmall {
+    font-size: 4.5px;
   }
 }
 
 /* Landscape mode on mobile */
 @media (max-height: 500px) and (orientation: landscape) {
-  .heroName {
-    font-size: clamp(20px, 5vh, 36px);
-    letter-spacing: clamp(2px, 0.5vh, 6px);
-  }
-  
-  .heroTitle {
-    font-size: clamp(8px, 2vh, 14px);
-    letter-spacing: clamp(1px, 0.3vh, 4px);
-  }
-  
   .heroContent {
     gap: 8px;
   }
-  
+
   .animationContainer.moveToTopLeft {
     top: 15px;
     left: 20px;
   }
-  
+
   .name {
     font-size: 16px;
   }
-  
+
   .name.nameSmall {
     font-size: 12px;
   }

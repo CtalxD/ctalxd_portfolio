@@ -1,24 +1,10 @@
+/* app/globals.css */
 @import "tailwindcss";
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-}
-
-/* Hide default cursor everywhere */
-html, body, #__next, #root {
-  cursor: none !important;
-}
-
-/* Hide scrollbar for all elements */
-* {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-*::-webkit-scrollbar {
-  display: none;
 }
 
 /* Remove default borders and outlines */
@@ -42,5 +28,4 @@ body {
   padding: 0;
   border: none;
   outline: none;
-  overflow-x: hidden;
 }

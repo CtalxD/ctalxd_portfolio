@@ -24,6 +24,7 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
   const onCompleteRef = useRef(onComplete);
   const hasCompletedRef = useRef(false);
   const isTransitioningRef = useRef(false);
+  const pendingDeltaRef = useRef(0);
 
   // Keep the callback ref in sync
   useEffect(() => {
@@ -31,27 +32,25 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
   }, [onComplete]);
 
   const updateScrollProgress = useCallback((delta: number) => {
-    setScrollProgress((prevProgress) => {
-      const newTotal = totalScrollDistance.current + delta;
-      const clampedTotal = Math.max(0, Math.min(newTotal, maxScrollDistance));
-      totalScrollDistance.current = clampedTotal;
-      const progress = clampedTotal / maxScrollDistance;
-      
-      // Only set isComplete once, don't call onComplete here
-      if (progress >= 1 && !hasCompletedRef.current) {
-        hasCompletedRef.current = true;
-        isTransitioningRef.current = true;
+    const newTotal = totalScrollDistance.current + delta;
+    const clampedTotal = Math.max(0, Math.min(newTotal, maxScrollDistance));
+    totalScrollDistance.current = clampedTotal;
+    const progress = clampedTotal / maxScrollDistance;
+    
+    setScrollProgress(progress);
+    
+    // Only set isComplete once, don't call onComplete here
+    if (progress >= 1 && !hasCompletedRef.current) {
+      hasCompletedRef.current = true;
+      isTransitioningRef.current = true;
+      setTimeout(() => {
+        setIsComplete(true);
+        // Allow normal scrolling after transition
         setTimeout(() => {
-          setIsComplete(true);
-          // Allow normal scrolling after transition
-          setTimeout(() => {
-            isTransitioningRef.current = false;
-          }, 300);
-        }, 0);
-      }
-      
-      return progress;
-    });
+          isTransitioningRef.current = false;
+        }, 300);
+      }, 0);
+    }
   }, []);
 
   // Handle the completion callback in an effect to avoid setState during render
@@ -115,35 +114,26 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
     if (!isActive) return;
 
     let animationFrameId: number;
-    let pendingDelta = 0;
 
     const handleWheel = (e: WheelEvent) => {
-      // Only handle wheel events when we're in the saying page phase
-      if (!isComplete || isTransitioningRef.current) {
-        e.preventDefault();
-        
-        // Don't process scroll if we're transitioning
-        if (isTransitioningRef.current) return;
-        
-        scrollDirection.current = e.deltaY;
-        lastScrollTime.current = Date.now();
+      // Don't prevent default scrolling - let the page scroll naturally
+      scrollDirection.current = e.deltaY;
+      lastScrollTime.current = Date.now();
 
-        if (pauseTimeout.current) {
-          clearTimeout(pauseTimeout.current);
-        }
+      if (pauseTimeout.current) {
+        clearTimeout(pauseTimeout.current);
+      }
 
-        pauseTimeout.current = setTimeout(() => {
-          scrollDirection.current = 0;
-        }, 150);
+      pauseTimeout.current = setTimeout(() => {
+        scrollDirection.current = 0;
+      }, 150);
 
-        if (Math.abs(e.deltaY) > 0) {
-          pendingDelta += e.deltaY;
-        }
+      if (Math.abs(e.deltaY) > 0) {
+        pendingDeltaRef.current += e.deltaY;
       }
     };
 
     const handleTouchStart = (e: TouchEvent) => {
-      if (isTransitioningRef.current) return;
       const touch = e.touches[0];
       (document.body as any).dataset.touchStartY = touch.clientY.toString();
       lastScrollTime.current = Date.now();
@@ -154,9 +144,6 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (isComplete && !isTransitioningRef.current) return;
-      if (isTransitioningRef.current) return;
-      
       const touchStartY = parseFloat(
         (document.body as any).dataset.touchStartY || "0"
       );
@@ -164,7 +151,6 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
       const delta = touchStartY - touchCurrentY;
 
       if (Math.abs(delta) > 0) {
-        e.preventDefault();
         scrollDirection.current = delta;
         lastScrollTime.current = Date.now();
 
@@ -176,30 +162,30 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
           scrollDirection.current = 0;
         }, 150);
 
-        pendingDelta += delta * 1.5;
+        pendingDeltaRef.current += delta * 1.5;
         (document.body as any).dataset.touchStartY =
           touchCurrentY.toString();
       }
     };
 
     const animateScroll = () => {
-      if (Math.abs(pendingDelta) > 0.1) {
-        const step = pendingDelta * 0.3;
+      if (Math.abs(pendingDeltaRef.current) > 0.1) {
+        const step = pendingDeltaRef.current * 0.3;
         updateScrollProgress(step);
-        pendingDelta -= step;
-      } else if (Math.abs(pendingDelta) > 0) {
-        updateScrollProgress(pendingDelta);
-        pendingDelta = 0;
+        pendingDeltaRef.current -= step;
+      } else if (Math.abs(pendingDeltaRef.current) > 0) {
+        updateScrollProgress(pendingDeltaRef.current);
+        pendingDeltaRef.current = 0;
       }
 
       animationFrameId = requestAnimationFrame(animateScroll);
     };
 
-    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("wheel", handleWheel, { passive: true });
     window.addEventListener("touchstart", handleTouchStart, {
-      passive: false,
+      passive: true,
     });
-    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
 
     animationFrameId = requestAnimationFrame(animateScroll);
 
@@ -212,7 +198,7 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
         clearTimeout(pauseTimeout.current);
       }
     };
-  }, [isActive, isComplete, updateScrollProgress]);
+  }, [isActive, updateScrollProgress]);
 
   const getTextStyle = (baseDelay: number) => {
     const progress = textAnimationProgress;
@@ -239,7 +225,6 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
       className={styles.container}
       style={{
         position: 'relative',
-        marginTop: '100vh',
       }}
     >
       <div className={styles.leftContent}>

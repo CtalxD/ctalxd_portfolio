@@ -17,6 +17,7 @@ export default function HomePage() {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [showSaying, setShowSaying] = useState(false);
   const [showProjects, setShowProjects] = useState(false);
+  const [allAnimationsComplete, setAllAnimationsComplete] = useState(false);
   const mainRef = useRef<HTMLDivElement>(null);
 
   // Initialize and update window size
@@ -64,15 +65,10 @@ export default function HomePage() {
       setShowCurtain(true);
     }, 8500);
 
-    // Show saying overlay at 9.5 seconds
+    // Mark all animations as complete at 9.5 seconds
     const timer6 = setTimeout(() => {
-      setShowSaying(true);
-    }, 800);
-
-    // Show projects overlay at 12 seconds
-    const timer7 = setTimeout(() => {
-      setShowProjects(true);
-    }, 800);
+      setAllAnimationsComplete(true);
+    }, 9500);
     
     return () => {
       clearTimeout(timer1);
@@ -81,7 +77,6 @@ export default function HomePage() {
       clearTimeout(timer4);
       clearTimeout(timer5);
       clearTimeout(timer6);
-      clearTimeout(timer7);
     };
   }, []);
 
@@ -107,6 +102,42 @@ export default function HomePage() {
       };
     }
   }, [animationPhase]);
+
+  // Handle scroll to reveal overlays after all animations complete
+  useEffect(() => {
+    if (!allAnimationsComplete) return;
+
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          
+          // Show saying page when scrolling down past 50px
+          if (currentScrollY > 50 && !showSaying) {
+            setShowSaying(true);
+          }
+          
+          // Show projects page when scrolling past 200px
+          if (currentScrollY > 200 && !showProjects) {
+            setShowProjects(true);
+          }
+          
+          lastScrollY = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [allAnimationsComplete, showSaying, showProjects]);
 
   const text = "welcome to my portfolio ";
   const characters = text.split("");
@@ -145,67 +176,70 @@ export default function HomePage() {
 
   return (
     <div ref={mainRef} className={styles.mainWrapper}>
-      <main className={styles.container}>
-        <div className={`${styles.curtain} ${showCurtain ? styles.curtainVisible : ''}`}></div>
-        <div className={`${styles.animationContainer} ${moveToCorner ? styles.moveToTopLeft : ''}`}>
-          <div className={styles.centerContent}>
-            <div className={styles.orbitWrapper}>
-              <div className={styles.orbitInner} style={{ opacity: orbitOpacity }}>
-                {animationPhase >= 2 && (
-                  <div style={{ 
-                    position: 'relative',
-                    width: `${radius * 2}px`,
-                    height: `${radius * 2}px`,
-                    transform: `rotate(${rotation}deg)`,
-                  }}>
-                    {characters.map((char, index) => (
-                      <span
-                        key={index}
-                        className={`${styles.orbitChar} ${moveToCorner ? styles.orbitCharSmall : ''} ${showCurtain ? styles.orbitCharWhite : ''}`}
-                        style={{
-                          left: `calc(50% + ${moveToCorner ? characterPositions[index].x * 0.6 : characterPositions[index].x}px)`,
-                          top: `calc(50% + ${moveToCorner ? characterPositions[index].y * 0.6 : characterPositions[index].y}px)`,
-                          transform: `translate(-50%, -50%) rotate(${characterPositions[index].baseAngle + 90}deg)`,
-                        }}
-                      >
-                        {char === " " ? "\u00A0" : char}
-                      </span>
-                    ))}
-                  </div>
-                )}
+      {/* Spacer div to enable scrolling after animations complete */}
+      <div style={{ height: allAnimationsComplete ? '300vh' : '100vh', transition: 'height 0.3s ease' }}>
+        <main className={styles.container}>
+          <div className={`${styles.curtain} ${showCurtain ? styles.curtainVisible : ''}`}></div>
+          <div className={`${styles.animationContainer} ${moveToCorner ? styles.moveToTopLeft : ''}`}>
+            <div className={styles.centerContent}>
+              <div className={styles.orbitWrapper}>
+                <div className={styles.orbitInner} style={{ opacity: orbitOpacity }}>
+                  {animationPhase >= 2 && (
+                    <div style={{ 
+                      position: 'relative',
+                      width: `${radius * 2}px`,
+                      height: `${radius * 2}px`,
+                      transform: `rotate(${rotation}deg)`,
+                    }}>
+                      {characters.map((char, index) => (
+                        <span
+                          key={index}
+                          className={`${styles.orbitChar} ${moveToCorner ? styles.orbitCharSmall : ''} ${showCurtain ? styles.orbitCharWhite : ''}`}
+                          style={{
+                            left: `calc(50% + ${moveToCorner ? characterPositions[index].x * 0.6 : characterPositions[index].x}px)`,
+                            top: `calc(50% + ${moveToCorner ? characterPositions[index].y * 0.6 : characterPositions[index].y}px)`,
+                            transform: `translate(-50%, -50%) rotate(${characterPositions[index].baseAngle + 90}deg)`,
+                          }}
+                        >
+                          {char === " " ? "\u00A0" : char}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <h1 className={`${styles.name} ${animationPhase >= 1 ? styles.visible : ''} ${moveToCorner ? styles.nameSmall : ''} ${showCurtain ? styles.nameWhite : ''}`}>
+                  Sital
+                </h1>
               </div>
-              <h1 className={`${styles.name} ${animationPhase >= 1 ? styles.visible : ''} ${moveToCorner ? styles.nameSmall : ''} ${showCurtain ? styles.nameWhite : ''}`}>
-                Sital
-              </h1>
             </div>
           </div>
-        </div>
 
-        <div className={`${styles.heroSection} ${showHero ? styles.heroVisible : ''}`}>
-          <div className={styles.heroContent}>
-            <h1 className={heroNameClasses}>
-              <span className={styles.heroNameChar} style={{ '--char-index': 0 } as React.CSSProperties}>S</span>
-              <span className={styles.heroNameChar} style={{ '--char-index': 1 } as React.CSSProperties}>I</span>
-              <span className={styles.heroNameChar} style={{ '--char-index': 2 } as React.CSSProperties}>T</span>
-              <span className={styles.heroNameChar} style={{ '--char-index': 3 } as React.CSSProperties}>A</span>
-              <span className={styles.heroNameChar} style={{ '--char-index': 4 } as React.CSSProperties}>L</span>
-              <span className={styles.heroNameChar} style={{ '--char-index': 5 } as React.CSSProperties}>&nbsp;</span>
-              <span className={styles.heroNameChar} style={{ '--char-index': 6 } as React.CSSProperties}>A</span>
-              <span className={styles.heroNameChar} style={{ '--char-index': 7 } as React.CSSProperties}>R</span>
-              <span className={styles.heroNameChar} style={{ '--char-index': 8 } as React.CSSProperties}>Y</span>
-              <span className={styles.heroNameChar} style={{ '--char-index': 9 } as React.CSSProperties}>A</span>
-              <span className={styles.heroNameChar} style={{ '--char-index': 10 } as React.CSSProperties}>L</span>
-            </h1>
-            <div className={heroDividerClasses}></div>
-            <p className={heroTitleClasses}>
-              <span className={styles.heroTitleWord}>UI/UX</span>
-              <span className={styles.heroTitleWord}>&nbsp;ENGINEER</span>
-            </p>
+          <div className={`${styles.heroSection} ${showHero ? styles.heroVisible : ''}`}>
+            <div className={styles.heroContent}>
+              <h1 className={heroNameClasses}>
+                <span className={styles.heroNameChar} style={{ '--char-index': 0 } as React.CSSProperties}>S</span>
+                <span className={styles.heroNameChar} style={{ '--char-index': 1 } as React.CSSProperties}>I</span>
+                <span className={styles.heroNameChar} style={{ '--char-index': 2 } as React.CSSProperties}>T</span>
+                <span className={styles.heroNameChar} style={{ '--char-index': 3 } as React.CSSProperties}>A</span>
+                <span className={styles.heroNameChar} style={{ '--char-index': 4 } as React.CSSProperties}>L</span>
+                <span className={styles.heroNameChar} style={{ '--char-index': 5 } as React.CSSProperties}>&nbsp;</span>
+                <span className={styles.heroNameChar} style={{ '--char-index': 6 } as React.CSSProperties}>A</span>
+                <span className={styles.heroNameChar} style={{ '--char-index': 7 } as React.CSSProperties}>R</span>
+                <span className={styles.heroNameChar} style={{ '--char-index': 8 } as React.CSSProperties}>Y</span>
+                <span className={styles.heroNameChar} style={{ '--char-index': 9 } as React.CSSProperties}>A</span>
+                <span className={styles.heroNameChar} style={{ '--char-index': 10 } as React.CSSProperties}>L</span>
+              </h1>
+              <div className={heroDividerClasses}></div>
+              <p className={heroTitleClasses}>
+                <span className={styles.heroTitleWord}>UI/UX</span>
+                <span className={styles.heroTitleWord}>&nbsp;ENGINEER</span>
+              </p>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
       
-      {/* Fixed overlay layers - always rendered, just fade in/out */}
+      {/* Fixed overlay layers - only appear when scrolled to */}
       <SayingPage isActive={showSaying} />
       <ProjectsPage isActive={showProjects} />
     </div>

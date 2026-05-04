@@ -55,7 +55,7 @@ export default function Home() {
     if (width <= 480) return { radius: 34, containerSize: 95, offsetDistance: 7, strokeWidth: 2 };
     if (width <= 768) return { radius: 36, containerSize: 100, offsetDistance: 8, strokeWidth: 2.5 };
     if (width <= 1024) return { radius: 40, containerSize: 110, offsetDistance: 9, strokeWidth: 2.5 };
-    if (width >= 2560) return { radius: 64, containerSize: 160, offsetDistance: 13, strokeWidth: 3 };
+    if (width >= 2560) return { radius: 52, containerSize: 140, offsetDistance: 11, strokeWidth: 3 };
     return { radius: 46, containerSize: 120, offsetDistance: 10, strokeWidth: 3 };
   }, [windowSize.width]);
 
@@ -73,6 +73,17 @@ export default function Home() {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Hide default cursor on mount
+  useEffect(() => {
+    document.documentElement.style.cursor = 'none';
+    document.body.style.cursor = 'none';
+    
+    return () => {
+      document.documentElement.style.cursor = '';
+      document.body.style.cursor = '';
+    };
   }, []);
 
   // Crazy cursor system
@@ -438,7 +449,7 @@ export default function Home() {
               cy={center}
               r={radius}
               fill="none"
-              stroke="#e8e8e0"
+              stroke="#ffffff"
               strokeWidth={strokeWidth}
             />
           </svg>
@@ -457,7 +468,7 @@ export default function Home() {
               fill="none"
               stroke="#2a2a2a"
               strokeWidth={strokeWidth}
-              strokeLinecap="round"
+              strokeLinecap="butt"
               strokeDasharray={circumference}
               strokeDashoffset={offset}
               transform={`rotate(-90 ${center} ${center})`}

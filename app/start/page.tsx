@@ -47,7 +47,7 @@ export default function Start() {
   const router = useRouter();
   const duration = 3000;
 
-  // Responsive sizes based on screen width
+  // Responsive sizes based on screen width - UPDATED for 1920px
   const getResponsiveSizes = useCallback(() => {
     const width = windowSize.width;
     if (width <= 320) return { radius: 28, containerSize: 80, offsetDistance: 5, strokeWidth: 2 };
@@ -55,8 +55,11 @@ export default function Start() {
     if (width <= 480) return { radius: 34, containerSize: 95, offsetDistance: 7, strokeWidth: 2 };
     if (width <= 768) return { radius: 36, containerSize: 100, offsetDistance: 8, strokeWidth: 2.5 };
     if (width <= 1024) return { radius: 40, containerSize: 110, offsetDistance: 9, strokeWidth: 2.5 };
+    if (width <= 1439) return { radius: 46, containerSize: 120, offsetDistance: 10, strokeWidth: 3 };
+    if (width <= 1919) return { radius: 48, containerSize: 125, offsetDistance: 10, strokeWidth: 3 };
     if (width >= 2560) return { radius: 52, containerSize: 140, offsetDistance: 11, strokeWidth: 3 };
-    return { radius: 46, containerSize: 120, offsetDistance: 10, strokeWidth: 3 };
+    // 1920px - 2559px (Full HD)
+    return { radius: 48, containerSize: 130, offsetDistance: 11, strokeWidth: 3 };
   }, [windowSize.width]);
 
   const { radius, containerSize, offsetDistance, strokeWidth } = getResponsiveSizes();
@@ -75,27 +78,14 @@ export default function Start() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Hide default cursor on mount with additional CSS reset for fonts
+  // Hide default cursor on mount
   useEffect(() => {
     document.documentElement.style.cursor = 'none';
     document.body.style.cursor = 'none';
     
-    // Prevent font scaling in some browsers
-    const style = document.createElement('style');
-    style.textContent = `
-      * {
-        -webkit-text-size-adjust: 100% !important;
-        -moz-text-size-adjust: 100% !important;
-        -ms-text-size-adjust: 100% !important;
-        text-size-adjust: 100% !important;
-      }
-    `;
-    document.head.appendChild(style);
-    
     return () => {
       document.documentElement.style.cursor = '';
       document.body.style.cursor = '';
-      document.head.removeChild(style);
     };
   }, []);
 

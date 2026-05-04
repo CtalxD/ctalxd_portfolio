@@ -1,6 +1,5 @@
 /* app/start/start.module.css */
 
-/* Move Google Fonts import to the top with proper fallbacks */
 @import url('https://fonts.googleapis.com/css2?family=Ceviche+One&display=swap');
 
 .container {
@@ -73,7 +72,7 @@
   color: #1a1a1a;
   font-size: 14px;
   font-weight: 400;
-  font-family: "Ceviche One", cursive, "Georgia", serif;
+  font-family: "Ceviche One", cursive;
   letter-spacing: 8px;
   text-transform: uppercase;
   z-index: 1;
@@ -84,10 +83,6 @@
   pointer-events: none;
   border: none;
   outline: none;
-  /* Prevent font scaling */
-  -webkit-text-size-adjust: 100%;
-  -moz-text-size-adjust: 100%;
-  text-size-adjust: 100%;
 }
 
 .startButton {
@@ -106,10 +101,6 @@
   overflow: hidden;
   outline: none;
   z-index: 2;
-  /* Prevent font scaling */
-  -webkit-text-size-adjust: 100%;
-  -moz-text-size-adjust: 100%;
-  text-size-adjust: 100%;
 }
 
 .startButton::after {
@@ -378,8 +369,39 @@
   }
 }
 
-/* Large Desktop (1440px - 1920px) */
-@media (min-width: 1440px) {
+/* Standard Desktop (1025px - 1439px) */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .container {
+    gap: 44px;
+  }
+  
+  .circleWrapper {
+    gap: 38px;
+  }
+  
+  .circleContainer {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .counterText {
+    font-size: 12px;
+  }
+  
+  .centerText {
+    font-size: 14px;
+    letter-spacing: 8px;
+  }
+  
+  .startButton {
+    padding: 8px 24px;
+    font-size: 10px;
+    letter-spacing: 5px;
+  }
+}
+
+/* Large Desktop (1440px - 1919px) */
+@media (min-width: 1440px) and (max-width: 1919px) {
   .container {
     gap: 44px;
     max-width: 1440px;
@@ -411,8 +433,8 @@
   }
 }
 
-/* Extra Large Desktop (1920px+) */
-@media (min-width: 1920px) {
+/* Full HD Desktop (1920px - 2559px) - YOUR SCREEN */
+@media (min-width: 1920px) and (max-width: 2559px) {
   .container {
     gap: 46px;
     max-width: 1600px;

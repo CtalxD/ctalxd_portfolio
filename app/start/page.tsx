@@ -75,14 +75,27 @@ export default function Start() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Hide default cursor on mount
+  // Hide default cursor on mount with additional CSS reset for fonts
   useEffect(() => {
     document.documentElement.style.cursor = 'none';
     document.body.style.cursor = 'none';
     
+    // Prevent font scaling in some browsers
+    const style = document.createElement('style');
+    style.textContent = `
+      * {
+        -webkit-text-size-adjust: 100% !important;
+        -moz-text-size-adjust: 100% !important;
+        -ms-text-size-adjust: 100% !important;
+        text-size-adjust: 100% !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
     return () => {
       document.documentElement.style.cursor = '';
       document.body.style.cursor = '';
+      document.head.removeChild(style);
     };
   }, []);
 

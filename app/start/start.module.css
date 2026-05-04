@@ -1,5 +1,6 @@
-/*app/start/start.module.css*/
+/* app/start/start.module.css */
 
+/* Move Google Fonts import to the top with proper fallbacks */
 @import url('https://fonts.googleapis.com/css2?family=Ceviche+One&display=swap');
 
 .container {
@@ -72,7 +73,7 @@
   color: #1a1a1a;
   font-size: 14px;
   font-weight: 400;
-  font-family: "Ceviche One", cursive;
+  font-family: "Ceviche One", cursive, "Georgia", serif;
   letter-spacing: 8px;
   text-transform: uppercase;
   z-index: 1;
@@ -83,6 +84,10 @@
   pointer-events: none;
   border: none;
   outline: none;
+  /* Prevent font scaling */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .startButton {
@@ -101,6 +106,10 @@
   overflow: hidden;
   outline: none;
   z-index: 2;
+  /* Prevent font scaling */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .startButton::after {

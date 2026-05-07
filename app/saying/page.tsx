@@ -74,16 +74,10 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
       const now = Date.now();
       const timeSinceLastScroll = now - lastScrollTime.current;
 
-      if (timeSinceLastScroll > 150) {
-        if (textAnimationRef.current < 1) {
-          textAnimationRef.current = Math.min(
-            1,
-            textAnimationRef.current + 0.005
-          );
-          setTextAnimationProgress(textAnimationRef.current);
-        }
-      } else {
+      if (timeSinceLastScroll <= 150) {
+        // Only update text when actively scrolling
         if (scrollDirection.current > 0) {
+          // Scrolling down - make text visible
           if (textAnimationRef.current < 1) {
             textAnimationRef.current = Math.min(
               1,
@@ -92,13 +86,19 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
             setTextAnimationProgress(textAnimationRef.current);
           }
         } else if (scrollDirection.current < 0) {
-          textAnimationRef.current = Math.max(
-            0.4,
-            textAnimationRef.current - 0.02
-          );
-          setTextAnimationProgress(textAnimationRef.current);
+          // Scrolling up - only make text blurry after 30% scrolled up
+          if (totalScrollDistance.current < maxScrollDistance * 0.7) {
+            if (textAnimationRef.current > 0.4) {
+              textAnimationRef.current = Math.max(
+                0.4,
+                textAnimationRef.current - 0.02
+              );
+              setTextAnimationProgress(textAnimationRef.current);
+            }
+          }
         }
       }
+      // When paused, keep text as is
 
       animationFrameId = requestAnimationFrame(animateText);
     };
@@ -208,9 +208,9 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
       Math.min(1, (progress - lineStart) / (1 - lineStart))
     );
 
-    const opacity = 0.2 + lineProgress * 0.8;
-    const translateY = (1 - lineProgress) * 30;
-    const blur = (1 - lineProgress) * 6;
+    const opacity = 0.3 + lineProgress * 0.7;
+    const translateY = (1 - lineProgress) * 20;
+    const blur = (1 - lineProgress) * 4;
 
     return {
       opacity: opacity,

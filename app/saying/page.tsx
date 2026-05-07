@@ -1,8 +1,10 @@
-// app/saying/page.tsx
+//app/saying/page.tsx
 
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { Canvas } from "@react-three/fiber";
+import ResumeGlitchScene from "../components/ResumeGlitchScene";
 import styles from "./page.module.css";
 
 interface SayingPageProps {
@@ -248,6 +250,24 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
               create one.
             </span>
           </p>
+        </div>
+      </div>
+      
+      {/* Right side with 3D Resume */}
+      <div className={styles.rightContent}>
+        <div className={styles.canvasWrapper}>
+          <Canvas
+            camera={{ position: [0, 0, 1.6], fov: 50 }}
+            dpr={[1, 1.5]}
+            gl={{ 
+              antialias: true,
+              alpha: true,
+              toneMapping: 3
+            }}
+          >
+            <ambientLight intensity={0.4} />
+            <ResumeGlitchScene scrollProgress={scrollProgress} />
+          </Canvas>
         </div>
       </div>
     </div>

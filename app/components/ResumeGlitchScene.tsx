@@ -1,4 +1,4 @@
-// components/ResumeGlitchScene.tsx
+//app/components/ResumeGlitchScene.tsx
 "use client";
 
 import { useRef, useMemo, useEffect, useState } from "react";

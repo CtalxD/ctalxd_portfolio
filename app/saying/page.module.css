@@ -26,6 +26,15 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+  transform: translateX(-70px);
+}
+
+.canvasWrapper {
+  width: 110%;
+  height: 100%;
+  position: relative;
+  margin-right: -10%;
 }
 
 .projectsSection {
@@ -109,6 +118,16 @@
     font-size: clamp(11px, 1.6vw, 16px);
     line-height: 2.3;
   }
+  
+  .rightContent {
+    transform: translateX(-30px);
+  }
+  
+  .canvasWrapper {
+    width: 110%;
+    height: 100%;
+    margin-right: -10%;
+  }
 }
 
 /* Tablets */
@@ -152,6 +171,16 @@
   .line4 {
     padding-left: clamp(48%, 62%, 62%);
   }
+  
+  .rightContent {
+    transform: translateX(-30px);
+  }
+  
+  .canvasWrapper {
+    width: 110%;
+    height: 100%;
+    margin-right: -10%;
+  }
 }
 
 /* Large phones */
@@ -193,6 +222,10 @@
     padding: 0 clamp(15px, 5vw, 20px);
     width: 100%;
     box-sizing: border-box;
+  }
+  
+  .rightContent {
+    display: none;
   }
 }
 
@@ -236,6 +269,10 @@
     width: 100%;
     box-sizing: border-box;
   }
+  
+  .rightContent {
+    display: none;
+  }
 }
 
 /* Landscape mode on mobile */
@@ -277,6 +314,16 @@
     width: 100%;
     box-sizing: border-box;
   }
+  
+  .rightContent {
+    transform: translateX(-30px);
+  }
+  
+  .canvasWrapper {
+    width: 110%;
+    height: 100%;
+    margin-right: -10%;
+  }
 }
 
 /* Large Desktop (4K) */
@@ -303,5 +350,15 @@
 
   .content {
     padding: 0 clamp(40px, 3vw, 80px);
+  }
+  
+  .rightContent {
+    transform: translateX(-30px);
+  }
+  
+  .canvasWrapper {
+    width: 110%;
+    height: 100%;
+    margin-right: -10%;
   }
 }

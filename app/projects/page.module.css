@@ -6,7 +6,6 @@
   background-color: #ffffff;
   display: flex;
   align-items: center;
-  justify-content: center;
   position: relative;
   z-index: 200;
 }
@@ -14,11 +13,13 @@
 .content {
   width: 100%;
   max-width: 1400px;
-  padding: clamp(80px, 15vh, 160px) clamp(20px, 8vw, 100px);
+  padding: clamp(40px, 8vh, 100px) clamp(20px, 8vw, 100px);
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
-  margin-bottom: clamp(60px, 10vh, 100px);
+  margin-bottom: clamp(20px, 4vh, 40px);
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -31,11 +32,11 @@
 
 .title {
   font-family: "Cormorant Garamond", serif;
-  font-size: clamp(36px, 6vw, 72px);
+  font-size: clamp(36px, 4vw, 46px);
   font-weight: 500;
   color: #000000;
   letter-spacing: clamp(2px, 0.3vw, 4px);
-  margin: 0 0 clamp(12px, 2vh, 20px) 0;
+  margin: 0 0 clamp(4px, 1vh, 12px) 0;
   line-height: 1.1;
 }
 
@@ -48,148 +49,176 @@
   margin: 0;
 }
 
-.projectsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: clamp(20px, 3vw, 40px);
-}
-
-.projectCard {
-  border-top: 1px solid #e0e0e0;
-  padding-top: clamp(24px, 4vh, 40px);
+.projectsLayout {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  opacity: 0;
-  transform: translateY(20px);
+  padding-bottom: clamp(80px, 15vh, 160px);
 }
 
-.projectCard.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.projectCard:hover {
-  border-top-color: #000000;
-}
-
-.projectCard:hover .projectArrow {
-  transform: translateX(8px);
-  color: #000000;
-}
-
-.projectContent {
+.projectsList {
   display: flex;
   flex-direction: column;
-  gap: clamp(8px, 1.5vh, 12px);
+  gap: clamp(4px, 1vh, 8px);
+  width: 100%;
 }
 
-.projectYear {
+.projectItem {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 24px);
+  padding: clamp(10px, 2vh, 18px) clamp(16px, 2vw, 24px);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: visible;
+}
+
+.projectItem.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.projectBg {
+  display: none;
+}
+
+.projectNumber {
   font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", "Menlo", "Courier New", monospace;
-  font-size: clamp(10px, 1.2vw, 12px);
+  font-size: clamp(10px, 1.2vw, 13px);
   font-weight: 400;
   color: #999999;
   letter-spacing: 1px;
-  text-transform: uppercase;
+  min-width: clamp(20px, 3vw, 28px);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.projectItem.hovered .projectNumber {
+  color: #000000;
 }
 
 .projectTitle {
   font-family: "Cormorant Garamond", serif;
-  font-size: clamp(24px, 3.5vw, 40px);
+  font-size: clamp(18px, 2.5vw, 32px);
   font-weight: 500;
-  color: #000000;
-  margin: 0;
-  letter-spacing: clamp(0.5px, 0.1vw, 1px);
-  line-height: 1.2;
-}
-
-.projectCategory {
-  font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", "Menlo", "Courier New", monospace;
-  font-size: clamp(10px, 1.2vw, 13px);
-  font-weight: 400;
   color: #666666;
-  letter-spacing: 0.5px;
+  margin: 0;
+  letter-spacing: clamp(0.5px, 0.08vw, 0.8px);
+  line-height: 1.2;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  outline: 1px solid transparent;
+  outline-offset: 8px;
+  padding: 4px 0;
 }
 
-.projectDescription {
-  font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", "Menlo", "Courier New", monospace;
-  font-size: clamp(11px, 1.3vw, 14px);
-  font-weight: 400;
-  color: #888888;
-  letter-spacing: 0.3px;
-  line-height: 1.6;
-  margin: clamp(4px, 1vh, 8px) 0 0 0;
-  max-width: 400px;
+.projectItem.hovered .projectTitle {
+  color: #000000;
+  outline-color: #000000;
 }
 
 .projectArrow {
-  font-size: clamp(20px, 2.5vw, 28px);
-  color: #cccccc;
+  font-size: clamp(16px, 2vw, 22px);
+  color: transparent;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  margin-top: clamp(8px, 1.5vh, 12px);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
-/* Tablet and smaller desktops */
+.projectItem.hovered .projectArrow {
+  color: #000000;
+}
+
+/* Tablet */
 @media (max-width: 1024px) {
-  .projectsGrid {
-    grid-template-columns: repeat(2, 1fr);
+  .projectTitle {
+    font-size: clamp(16px, 2.2vw, 28px);
   }
 }
 
 /* Tablets */
 @media (max-width: 768px) {
-  .projectsGrid {
-    grid-template-columns: 1fr;
-    gap: clamp(16px, 3vw, 30px);
+  .content {
+    padding: clamp(24px, 5vh, 48px) clamp(16px, 5vw, 30px);
   }
 
-  .projectDescription {
-    max-width: 100%;
+  .projectTitle {
+    font-size: clamp(15px, 2vw, 24px);
+  }
+
+  .projectItem {
+    gap: clamp(10px, 1.5vw, 16px);
+    padding: clamp(8px, 1.5vh, 14px) clamp(12px, 2vw, 20px);
   }
 }
 
 /* Large phones */
 @media (max-width: 480px) {
   .content {
-    padding: clamp(60px, 12vh, 100px) clamp(15px, 5vw, 25px);
+    padding: clamp(20px, 4vh, 36px) clamp(12px, 4vw, 20px);
   }
 
-  .projectCard {
-    padding-top: clamp(20px, 3vh, 30px);
+  .projectItem {
+    gap: clamp(8px, 1.5vw, 14px);
+    padding: clamp(8px, 1.5vh, 12px) clamp(10px, 2vw, 16px);
   }
 
-  .projectDescription {
-    max-width: 100%;
+  .projectTitle {
+    font-size: clamp(14px, 2.5vw, 20px);
+  }
+
+  .projectArrow {
+    font-size: clamp(14px, 1.5vw, 18px);
   }
 }
 
 /* Small phones */
 @media (max-width: 360px) {
   .content {
-    padding: clamp(40px, 10vh, 80px) clamp(12px, 4vw, 20px);
+    padding: clamp(16px, 3vh, 28px) clamp(10px, 3vw, 16px);
+  }
+
+  .projectTitle {
+    font-size: clamp(13px, 3vw, 18px);
   }
 }
 
-/* Landscape mode on mobile */
+/* Landscape mode */
 @media (max-height: 500px) and (orientation: landscape) {
   .content {
-    padding: clamp(40px, 10vh, 80px) clamp(20px, 5vw, 40px);
+    padding: clamp(10px, 3vh, 20px) clamp(16px, 4vw, 30px);
+  }
+
+  .header {
+    margin-bottom: clamp(8px, 2vh, 16px);
+  }
+
+  .projectItem {
+    padding: clamp(6px, 1.2vh, 10px) clamp(12px, 2vw, 20px);
+  }
+
+  .projectTitle {
+    font-size: clamp(13px, 1.8vw, 20px);
+  }
+
+  .projectsList {
+    gap: clamp(2px, 0.5vh, 4px);
+  }
+
+  .projectsLayout {
+    padding-bottom: clamp(40px, 10vh, 80px);
   }
 }
 
-/* Large Desktop (4K) */
+/* Large Desktop */
 @media (min-width: 2560px) {
   .content {
     max-width: 1800px;
-  }
-  
-  .projectsGrid {
-    gap: 50px;
-  }
-  
-  .projectDescription {
-    max-width: 600px;
   }
 }

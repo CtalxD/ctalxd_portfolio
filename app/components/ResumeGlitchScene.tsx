@@ -452,11 +452,20 @@ function GlitchParticles({ width, height, scrollProgress }: { width: number; hei
 export default function ResumeGlitchScene({ scrollProgress }: ResumeGlitchSceneProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
-  const { viewport } = useThree();
+  const { viewport, size } = useThree();
   const [isClient, setIsClient] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     setIsClient(true);
+    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Only create texture on client side
@@ -474,8 +483,28 @@ export default function ResumeGlitchScene({ scrollProgress }: ResumeGlitchSceneP
     uLightPos2: { value: new THREE.Vector3(-4,-3,4) },
   }), [texture]);
 
-  const width = Math.min(viewport.width * 0.64, 1.45);
+  // Responsive width calculation based on screen size
+  const getResponsiveWidth = () => {
+    const screenWidth = windowSize.width;
+    if (screenWidth <= 360) return Math.min(viewport.width * 0.55, 1.1);
+    if (screenWidth <= 480) return Math.min(viewport.width * 0.6, 1.25);
+    if (screenWidth <= 768) return Math.min(viewport.width * 0.62, 1.35);
+    if (screenWidth <= 1024) return Math.min(viewport.width * 0.63, 1.4);
+    if (screenWidth <= 1366) return Math.min(viewport.width * 0.64, 1.45);
+    if (screenWidth >= 2560) return Math.min(viewport.width * 0.5, 2.0);
+    return Math.min(viewport.width * 0.64, 1.45);
+  };
+
+  const width = getResponsiveWidth();
   const height = width * 1.414;
+
+  // Responsive noise scale for different screen sizes
+  const getNoiseScale = () => {
+    const screenWidth = windowSize.width;
+    if (screenWidth <= 480) return 2.8;
+    if (screenWidth <= 768) return 3.2;
+    return 3.5;
+  };
 
   const timer = useMemo(() => new THREE.Timer(), []);
 
@@ -487,9 +516,14 @@ export default function ResumeGlitchScene({ scrollProgress }: ResumeGlitchSceneP
     const mat = meshRef.current.material as THREE.ShaderMaterial;
     mat.uniforms.uTime.value = timer.getElapsed();
     mat.uniforms.uProgress.value = scrollProgress;
+    mat.uniforms.uNoiseScale.value = getNoiseScale();
     
-    const targetRotationX = mouse.y * 0.1;
-    const targetRotationY = mouse.x * 0.15;
+    // Reduced mouse interaction for smaller screens
+    const screenWidth = windowSize.width;
+    const mouseMultiplier = screenWidth <= 768 ? 0.5 : 1;
+    
+    const targetRotationX = mouse.y * 0.1 * mouseMultiplier;
+    const targetRotationY = mouse.x * 0.15 * mouseMultiplier;
     
     groupRef.current.rotation.x += (targetRotationX - groupRef.current.rotation.x) * 0.05;
     groupRef.current.rotation.y += (targetRotationY - groupRef.current.rotation.y) * 0.05;

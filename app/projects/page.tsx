@@ -1,5 +1,3 @@
-// app/projects/page.tsx
-
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
@@ -16,15 +14,15 @@ export default function ProjectsPage({ isActive = false }: ProjectsPageProps) {
   const projectsScrollingEnabledRef = useRef(false);
 
   const projects = [
-    "RouteMate – Real-Time Bus Tracking App",
-    "Restaurant Management System",
-    "Real Estate Website",
-    "Car Rental System",
-    "Salon Booking System",
-    "Skill Sikshya / Vrit Technologies",
-    "Astrology Website",
-    "Music Streaming Platform",
-    "Mercedes AMG GT",
+    { name: "ROUTEMATE", tag: "APP DESIGN / DEVELOPMENT" },
+    { name: "KINGS EATERY", tag: "WEB DESIGN / DEVELOPMENT" },
+    { name: "WHITE HOUSE", tag: "WEB DESIGN / UI/UX" },
+    { name: "VROOM RENTAL", tag: "TESTING / UI/UX" },
+    { name: "SALON VOGUE", tag: "WIREFRAMING / UI/UX" },
+    { name: "VRIT TECHNOLOGIES", tag: "LANDING PAGE / UI/UX" },
+    { name: "ASTROLOGY WEBSITE", tag: "WEB DESIGN / UI/UX" },
+    { name: "SONORA", tag: "LANDING PAGE / UI/UX" },
+    { name: "MERCEDES AMG GT", tag: "LANDING PAGE / UI/UX" },
   ];
 
   useEffect(() => {
@@ -164,7 +162,13 @@ export default function ProjectsPage({ isActive = false }: ProjectsPageProps) {
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                <h3 className={styles.projectTitle}>{project}</h3>
+                <div className={styles.projectTitleWrapper}>
+                  <h3 className={`${styles.projectTitle} ${styles.projectTitleBold}`}>{project.name}</h3>
+                  <h3 className={`${styles.projectTitle} ${styles.projectTitleRegular}`}>{project.name}</h3>
+                </div>
+                <div className={`${styles.projectTag} ${hoveredIndex === index && project.tag ? styles.projectTagVisible : ''}`}>
+                  <span>{project.tag}</span>
+                </div>
               </div>
             ))}
           </div>

@@ -237,18 +237,18 @@ export default function SayingPage({ onComplete, isActive = true }: SayingPagePr
 
         <div className={styles.content}>
           <p className={styles.saying}>
-            <span className={styles.line1} style={getTextStyle(0)}>
-              Prolly your CEO lied too so it&apos;s ok to lie
-            </span>
-            <span className={styles.line2} style={getTextStyle(0.15)}>
-              in your resume but make sure you lie
-            </span>
-            <span className={styles.line3} style={getTextStyle(0.3)}>
-              to enhance your experience, don&apos;t
-            </span>
-            <span className={styles.line4} style={getTextStyle(0.45)}>
-              create one.
-            </span>
+          <span className={styles.line1} style={getTextStyle(0)}>
+            Everyone sells themselves a little.
+          </span>
+          <span className={styles.line2} style={getTextStyle(0.15)}>
+            Your resume should too,
+          </span>
+          <span className={styles.line3} style={getTextStyle(0.3)}>
+            just amplify your real experience,
+          </span>
+          <span className={styles.line4} style={getTextStyle(0.45)}>
+            don’t fake one.
+          </span>
           </p>
         </div>
       </div>
